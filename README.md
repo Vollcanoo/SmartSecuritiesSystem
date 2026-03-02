@@ -14,7 +14,7 @@
 
 ## 📺 演示视频
 
-<video src="docs/demo.mp4" controls width="100%"></video>
+<video src="https://github.com/user-attachments/assets/77b13702-3f2c-40cf-b48b-f195e92e8954" controls width="100%"></video>
 
 ---
 
