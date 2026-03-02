@@ -1,0 +1,463 @@
+{
+  "info": {
+    "name": "Trading System API",
+    "description": "模拟股票交易对敲撮合系统 API 集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "admin_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "core_url",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "shareholderId",
+      "value": "SH00010001",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "ORD001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Admin - 用户管理",
+      "item": [
+        {
+          "name": "创建用户",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"测试用户1\"\n}"
+            },
+            "url": {
+              "raw": "{{admin_url}}/api/users",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users"]
+            },
+            "description": "创建新用户，仅需提供用户名，系统自动生成 UID 和股东号"
+          }
+        },
+        {
+          "name": "查询所有用户",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/users",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users"]
+            },
+            "description": "查询系统中所有用户"
+          }
+        },
+        {
+          "name": "按股东号查询用户",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/users/shareholder/{{shareholderId}}",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users", "shareholder", "{{shareholderId}}"]
+            },
+            "description": "根据股东号查询用户信息"
+          }
+        },
+        {
+          "name": "按 UID 查询用户",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/users/10001",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users", "10001"]
+            }
+          }
+        },
+        {
+          "name": "禁用用户",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/users/10001/suspend",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users", "10001", "suspend"]
+            },
+            "description": "禁用指定用户，禁用后无法下单"
+          }
+        },
+        {
+          "name": "启用用户",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/users/10001/resume",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users", "10001", "resume"]
+            },
+            "description": "恢复禁用的用户"
+          }
+        },
+        {
+          "name": "查询用户余额",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/users/10001/balance",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "users", "10001", "balance"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - 订单历史",
+      "item": [
+        {
+          "name": "查询历史订单（按股东号）",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/orders/history?shareholderId={{shareholderId}}&page=0&size=20",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "orders", "history"],
+              "query": [
+                {
+                  "key": "shareholderId",
+                  "value": "{{shareholderId}}"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "查询历史订单（按状态）",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/orders/history?status=FILLED&page=0&size=50",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "orders", "history"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "FILLED"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "删除单条订单",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/orders/history/1",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "orders", "history", "1"]
+            }
+          }
+        },
+        {
+          "name": "删除全部订单",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/api/orders/history",
+              "host": ["{{admin_url}}"],
+              "path": ["api", "orders", "history"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core - 交易",
+      "item": [
+        {
+          "name": "下买单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clOrderId\": \"BUY001\",\n  \"market\": \"XSHG\",\n  \"securityId\": \"600030\",\n  \"side\": \"B\",\n  \"qty\": 100,\n  \"price\": 10.5,\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "提交买单，B=买入"
+          }
+        },
+        {
+          "name": "下卖单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clOrderId\": \"SELL001\",\n  \"market\": \"XSHG\",\n  \"securityId\": \"600030\",\n  \"side\": \"S\",\n  \"qty\": 100,\n  \"price\": 10.6,\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "提交卖单，S=卖出"
+          }
+        },
+        {
+          "name": "下单（不指定订单号）",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"market\": \"XSHG\",\n  \"securityId\": \"600030\",\n  \"side\": \"B\",\n  \"qty\": 100,\n  \"price\": 10.5,\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "订单号由系统自动生成"
+          }
+        },
+        {
+          "name": "撤单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origClOrderId\": \"{{orderId}}\",\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/cancel",
+              "host": ["{{core_url}}"],
+              "path": ["api", "cancel"]
+            },
+            "description": "撤销指定订单，只需提供原订单号"
+          }
+        },
+        {
+          "name": "查询挂单",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{core_url}}/api/orders?shareholderId={{shareholderId}}",
+              "host": ["{{core_url}}"],
+              "path": ["api", "orders"],
+              "query": [
+                {
+                  "key": "shareholderId",
+                  "value": "{{shareholderId}}"
+                }
+              ]
+            },
+            "description": "查询当前未成交的挂单"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core - 测试场景",
+      "item": [
+        {
+          "name": "测试对敲（应被拒绝）",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"market\": \"XSHG\",\n  \"securityId\": \"600030\",\n  \"side\": \"S\",\n  \"qty\": 100,\n  \"price\": 10.6,\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "如果同股东同股票已有买单，此卖单应被拒绝（rejectCode=1002）"
+          }
+        },
+        {
+          "name": "测试非法市场",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"market\": \"INVALID\",\n  \"securityId\": \"600030\",\n  \"side\": \"B\",\n  \"qty\": 100,\n  \"price\": 10.5,\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "非法市场代码，应被拒绝（rejectCode=1001）"
+          }
+        },
+        {
+          "name": "测试价格为0",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"market\": \"XSHG\",\n  \"securityId\": \"600030\",\n  \"side\": \"B\",\n  \"qty\": 100,\n  \"price\": 0,\n  \"shareholderId\": \"{{shareholderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "价格为0，应被拒绝"
+          }
+        },
+        {
+          "name": "测试非法股东号",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"market\": \"XSHG\",\n  \"securityId\": \"600030\",\n  \"side\": \"B\",\n  \"qty\": 100,\n  \"price\": 10.5,\n  \"shareholderId\": \"INVALID123\"\n}"
+            },
+            "url": {
+              "raw": "{{core_url}}/api/order",
+              "host": ["{{core_url}}"],
+              "path": ["api", "order"]
+            },
+            "description": "非法股东号，应被拒绝（rejectCode=1009）"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Admin Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{admin_url}}/actuator/health",
+              "host": ["{{admin_url}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "Core Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{core_url}}/actuator/health",
+              "host": ["{{core_url}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "Gateway Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/actuator/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["actuator", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

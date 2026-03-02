@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史订单 - CyberTrader</title>
+    <link rel="stylesheet" href="css/style.css?v=2.2">
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CyberTrader<span class="subtitle">// 模拟股票交易对敲撮合系统 v2.0</span></h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易终端</a>
+                <a href="orders.html" class="nav-link active">历史订单</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+                <a href="market-data.html" class="nav-link">市场行情</a>
+                <a href="ai-analytics.html" class="nav-link">智能分析</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="order-history">
+                <h2>历史订单</h2>
+
+                <div class="card">
+                    <h3>查询条件</h3>
+                    <form id="search-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="search-shareholderId">股东号:</label>
+                                <input type="text" id="search-shareholderId" name="shareholderId" maxlength="10" placeholder="可选">
+                            </div>
+                            <div class="form-group">
+                                <label for="search-status">状态:</label>
+                                <select id="search-status" name="status">
+                                    <option value="">全部</option>
+                                    <option value="LIVE">挂单中</option>
+                                    <option value="PARTIALLY_FILLED">部分成交</option>
+                                    <option value="FILLED">全部成交</option>
+                                    <option value="CANCELLED">已撤单</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="page-size">每页显示:</label>
+                                <select id="page-size" name="size">
+                                    <option value="20">20</option>
+                                    <option value="50" selected>50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button type="submit" class="btn btn-primary">⚡ QUERY</button>
+                            <button type="button" onclick="resetSearch()" class="btn btn-secondary">↻ RESET</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Records</h3>
+                    <div class="pagination-info">
+                        <span id="pagination-info">PAGE 0 / 0 RECORDS</span>
+                        <div class="pagination">
+                            <button id="prev-page" onclick="changePage(-1)" class="btn btn-sm btn-secondary" disabled>« PREV</button>
+                            <span id="current-page" style="color:var(--accent-cyan);">1</span>
+                            <button id="next-page" onclick="changePage(1)" class="btn btn-sm btn-secondary" disabled>NEXT »</button>
+                            <button type="button" id="btn-delete-all-orders" class="btn btn-sm btn-danger" title="删除全部">⚠ PURGE ALL</button>
+                        </div>
+                    </div>
+                    <div id="orders-list" class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>股东号</th>
+                                    <th>市场</th>
+                                    <th>代码</th>
+                                    <th>方向</th>
+                                    <th>价格</th>
+                                    <th>数量</th>
+                                    <th>已成交</th>
+                                    <th>已撤</th>
+                                    <th>状态</th>
+                                    <th>时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <tr><td colspan="12" class="loading">AWAITING QUERY...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>CyberTrader v2.0 // 模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/orders.js"></script>
+</body>
+</html>

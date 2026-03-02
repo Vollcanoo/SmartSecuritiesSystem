@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 数据分析 - CyberTrader</title>
+    <link rel="stylesheet" href="css/style.css?v=2.2">
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CyberTrader<span class="subtitle">// 模拟股票交易对敲撮合系统 v2.0</span></h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易终端</a>
+                <a href="orders.html" class="nav-link">历史订单</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+                <a href="market-data.html" class="nav-link">市场行情</a>
+                <a href="ai-analytics.html" class="nav-link active">智能分析</a>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+                <h2>智能分析</h2>
+
+                <div class="card">
+                    <h3>配置</h3>
+                    <p class="info-text">
+                        使用 <a href="https://cloud.siliconflow.cn/" target="_blank" style="color:var(--accent-cyan);">SiliconFlow</a> 
+                        大模型 API 进行智能分析。请先在 SiliconFlow 注册并获取 API Key。
+                        Qwen2.5-7B 模型免费可用。
+                    </p>
+                    <form id="ai-form" class="form">
+                        <div class="ai-config">
+                            <div class="form-group">
+                                <label for="ai-apikey">API Key:</label>
+                                <input type="password" id="ai-apikey" required placeholder="sk-xxxxxxxxxxxxxxxx">
+                            </div>
+                            <div class="form-group">
+                                <label for="ai-model">模型:</label>
+                                <select id="ai-model">
+                                    <option value="Qwen/Qwen2.5-7B-Instruct">Qwen2.5 7B (免费)</option>
+                                    <option value="Qwen/Qwen2.5-72B-Instruct">Qwen2.5 72B</option>
+                                    <option value="deepseek-ai/DeepSeek-V3">DeepSeek V3</option>
+                                    <option value="deepseek-ai/DeepSeek-R1">DeepSeek R1 (推理)</option>
+                                    <option value="THUDM/glm-4-9b-chat">GLM-4 9B</option>
+                                    <option value="meta-llama/Meta-Llama-3.1-8B-Instruct">Llama 3.1 8B</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ai-question">分析指令:</label>
+                            <textarea id="ai-question" rows="3" placeholder="请分析当前的交易数据，给出详细的分析报告和交易建议。">请分析当前的交易数据，给出详细的分析报告和交易建议。</textarea>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <button type="submit" class="btn btn-success">运行分析</button>
+                            <button type="button" onclick="saveApiKey()" class="btn btn-secondary btn-sm">保存 KEY</button>
+                            <span id="key-status" style="font-size:11px;color:var(--text-muted);"></span>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 统计概览（非AI） -->
+                <div class="card">
+                    <h3>数据概览 (Raw)</h3>
+                    <div id="stats-overview" style="font-size:12px;color:var(--text-secondary);">
+                        加载数据...
+                    </div>
+                </div>
+
+                <!-- AI 输出 -->
+                <div class="card">
+                    <h3>AI 分析报告</h3>
+                    <div id="ai-output" class="ai-output">
+                        <span style="color:var(--text-muted);">// 配置 API Key 后点击 运行分析 生成智能分析报告</span>
+                    </div>
+                    <div id="token-usage" class="token-usage"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>CyberTrader v2.0 // 模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ai-analytics.js"></script>
+</body>
+</html>

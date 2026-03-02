@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberTrader 模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css?v=2.2">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CyberTrader<span class="subtitle">// 模拟股票交易对敲撮合系统 v2.0</span></h1>
+            <nav>
+                <a href="index.html" class="nav-link active">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易终端</a>
+                <a href="orders.html" class="nav-link">历史订单</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+                <a href="market-data.html" class="nav-link">市场行情</a>
+                <a href="ai-analytics.html" class="nav-link">智能分析</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="dashboard">
+                <h2>系统概览</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>服务状态</h3>
+                        <div id="service-status" class="status-loading">SCANNING...</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>在线用户</h3>
+                        <div id="user-count" class="stat-value">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>今日订单</h3>
+                        <div id="today-orders" class="stat-value">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>行情品种</h3>
+                        <div id="market-count" class="stat-value">-</div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>快速操作</h3>
+                    <div class="action-buttons">
+                        <button onclick="location.href='users.html'" class="btn btn-primary">创建用户</button>
+                        <button onclick="location.href='trading.html'" class="btn btn-success">快速下单</button>
+                        <button onclick="location.href='market-data.html'" class="btn btn-warning">查看行情</button>
+                        <button onclick="location.href='orders.html'" class="btn btn-info">订单历史</button>
+                        <button onclick="location.href='ai-analytics.html'" class="btn btn-danger">智能分析</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>系统配置</h3>
+                    <ul>
+                        <li><strong>MARKET_CODE</strong> → XSHG（上交所）| XSHE（深交所）| BJSE（北交所）</li>
+                        <li><strong>ORDER_SIDE</strong> → B（买入 BID）| S（卖出 ASK）</li>
+                        <li><strong>RISK_CTRL</strong> → 对敲风控：同一股东号 + 同市场 + 同证券 ≠ 同时买卖</li>
+                        <li><strong>PRICE_CHK</strong> → 涨跌停 ±10% | 偏离度 ±10%（基于行情数据）</li>
+                        <li><strong>ENDPOINTS</strong> → Admin :8080 | Core :8081 | Gateway :9000 | Frontend :8000</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>CyberTrader v2.0 // 模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
