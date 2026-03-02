@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>当前挂单 - 模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 模拟股票交易对敲撮合系统</h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易下单</a>
+                <a href="orders.html" class="nav-link">订单历史</a>
+                <a href="open-orders.html" class="nav-link active">当前挂单</a>
+                <a href="user-analysis.html" class="nav-link">用户分析</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="open-orders">
+                <h2>当前挂单</h2>
+
+                <div class="card">
+                    <h3>查询挂单</h3>
+                    <form id="search-open-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="open-shareholderId">股东号:</label>
+                                <input type="text" id="open-shareholderId" name="shareholderId" required maxlength="10" placeholder="如: A123456789">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">查询</button>
+                                <button type="button" onclick="loadOpenOrders()" class="btn btn-secondary">刷新</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>挂单列表</h3>
+                    <div id="open-orders-list" class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>订单编号</th>
+                                    <th>股东号</th>
+                                    <th>市场</th>
+                                    <th>股票代码</th>
+                                    <th>方向</th>
+                                    <th>价格</th>
+                                    <th>数量</th>
+                                    <th>已成交</th>
+                                    <th>剩余</th>
+                                </tr>
+                            </thead>
+                            <tbody id="open-orders-table-body">
+                                <tr><td colspan="9" class="loading">请输入股东号并点击查询</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/open-orders.js"></script>
+</body>
+</html>
