@@ -14,11 +14,7 @@
 
 ## 📺 演示视频
 
-<video src="docs/demo.mp4" controls width="100%">
-  <p>你的浏览器不支持内嵌视频，<a href="docs/demo.mp4">点击下载观看</a></p>
-</video>
-
-> 视频文件位于 [`docs/demo.mp4`](docs/demo.mp4)，将录制好的演示视频命名为 `demo.mp4` 放入 `docs/` 目录即可。
+<video src="docs/demo.mp4" controls width="100%"></video>
 
 ---
 
