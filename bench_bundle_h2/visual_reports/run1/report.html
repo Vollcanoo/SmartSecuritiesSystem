@@ -1,0 +1,780 @@
+<!doctype html><html><head><meta charset='utf-8'/>
+<title>Throughput Report</title>
+
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; color: #111827; background: #f9fafb; }
+h1, h2, h3 { margin: 8px 0; }
+.meta { color: #4b5563; font-size: 13px; }
+.card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; background: white; }
+th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: right; }
+th { background: #f3f4f6; text-align: center; }
+td.left { text-align: left; }
+.svg-wrap { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; }
+</style>
+
+</head><body>
+<h1>Throughput Evaluation Report</h1>
+<div class='meta'>Generated at: 2026-03-02T16:22:09.868471</div>
+<div class='meta'>Datasets: 2</div>
+<div class='card'><h2>Global Comparison</h2>
+<h3>RPS vs Concurrency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">All Datasets - RPS vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">600</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">800</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">1000</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">RPS</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,274.37 485.00,275.03 900.00,343.07"/>
+<circle cx="70.00" cy="274.37" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="275.03" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="343.07" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,210.86 485.00,218.57 900.00,293.80"/>
+<circle cx="70.00" cy="210.86" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="218.57" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="293.80" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">result_core</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">result_gateway</text>
+</svg></div>
+<h3>Effective RPS vs Concurrency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">All Datasets - Effective RPS vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">100</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">300</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">500</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Effective RPS</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,183.75 485.00,185.05 900.00,321.14"/>
+<circle cx="70.00" cy="183.75" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="185.05" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="321.14" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,365.00 485.00,365.00 900.00,365.00"/>
+<circle cx="70.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">result_core</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">result_gateway</text>
+</svg></div>
+<h3>P95 Latency (ms) vs Concurrency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">All Datasets - P95 Latency vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">100</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">300</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">500</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">P95 Latency (ms)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,301.27 485.00,224.91 900.00,191.57"/>
+<circle cx="70.00" cy="301.27" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="224.91" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="191.57" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,338.84 485.00,310.49 900.00,267.99"/>
+<circle cx="70.00" cy="338.84" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="310.49" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="267.99" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">result_core</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">result_gateway</text>
+</svg></div>
+<h3>Fail Rate (%) vs Concurrency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">All Datasets - Fail Rate (%) vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">40</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">60</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">100</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Fail Rate (%)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,365.00 485.00,365.00 900.00,86.44"/>
+<circle cx="70.00" cy="365.00" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="365.00" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="86.44" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,230.12 485.00,200.65 900.00,138.15"/>
+<circle cx="70.00" cy="230.12" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="200.65" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="138.15" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">result_core</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">result_gateway</text>
+</svg></div>
+<h3>Biz Reject Rate (%) vs Concurrency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">All Datasets - Biz Reject Rate (%) vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">40</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">120</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">160</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Biz Reject Rate (%)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,365.00 485.00,365.00 900.00,365.00"/>
+<circle cx="70.00" cy="365.00" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="365.00" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="365.00" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,205.00 485.00,205.00 900.00,205.00"/>
+<circle cx="70.00" cy="205.00" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="205.00" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="205.00" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">result_core</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">result_gateway</text>
+</svg></div>
+</div>
+<div class='card'>
+<h2>Dataset: result_core</h2>
+<div class='meta'>File: result_core.json | target: core | started_at_utc: 2026-03-02T08:21:14.516512+00:00</div>
+<table><thead><tr>
+<th>run_name</th>
+<th>concurrency</th>
+<th>total</th>
+<th>ok</th>
+<th>fail</th>
+<th>biz_reject_or_error</th>
+<th>rps</th>
+<th>effective_rps</th>
+<th>success_rate_pct</th>
+<th>fail_rate_pct</th>
+<th>biz_reject_rate_pct</th>
+<th>avg_ms</th>
+<th>p50_ms</th>
+<th>p90_ms</th>
+<th>p95_ms</th>
+<th>p99_ms</th>
+<th>p999_ms</th>
+<th>max_ms</th>
+<th>std_ms</th>
+<th>reject_codes(top)</th>
+</tr></thead><tbody>
+<tr>
+<td class='left'>run1_5000x20</td>
+<td>20</td>
+<td>5000</td>
+<td>5000</td>
+<td>0</td>
+<td>0</td>
+<td>283.21</td>
+<td>283.21</td>
+<td>100.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>70.50</td>
+<td>69.46</td>
+<td>92.02</td>
+<td>99.58</td>
+<td>116.10</td>
+<td>138.57</td>
+<td>156.26</td>
+<td>16.64</td>
+<td class='left'></td>
+</tr>
+<tr>
+<td class='left'>run2_10000x50</td>
+<td>50</td>
+<td>10000</td>
+<td>10000</td>
+<td>0</td>
+<td>0</td>
+<td>281.17</td>
+<td>281.17</td>
+<td>100.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>177.53</td>
+<td>174.89</td>
+<td>208.54</td>
+<td>218.89</td>
+<td>242.92</td>
+<td>281.27</td>
+<td>303.95</td>
+<td>23.46</td>
+<td class='left'></td>
+</tr>
+<tr>
+<td class='left'>run3_12000x80</td>
+<td>80</td>
+<td>12000</td>
+<td>1554</td>
+<td>10446</td>
+<td>0</td>
+<td>68.53</td>
+<td>68.53</td>
+<td>12.95</td>
+<td>87.05</td>
+<td>0.00</td>
+<td>150.61</td>
+<td>140.85</td>
+<td>249.69</td>
+<td>270.99</td>
+<td>344.05</td>
+<td>400.24</td>
+<td>427.82</td>
+<td>61.07</td>
+<td class='left'></td>
+</tr>
+</tbody></table>
+<h3>RPS</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_core - Throughput vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">100</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">300</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">500</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">RPS</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,183.75 485.00,185.05 900.00,321.14"/>
+<circle cx="70.00" cy="183.75" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="185.05" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="321.14" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,183.75 485.00,185.05 900.00,321.14"/>
+<circle cx="70.00" cy="183.75" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="185.05" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="321.14" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">rps</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">effective_rps</text>
+</svg></div>
+<h3>Latency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_core - Latency vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">100</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">300</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">500</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Latency (ms)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,320.55 485.00,253.07 900.00,274.86"/>
+<circle cx="70.00" cy="320.55" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="253.07" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="274.86" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,306.11 485.00,231.53 900.00,205.20"/>
+<circle cx="70.00" cy="306.11" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="231.53" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="205.20" r="3.2" fill="#dc2626"/>
+<polyline fill="none" stroke="#16a34a" stroke-width="2.2" points="70.00,301.27 485.00,224.91 900.00,191.57"/>
+<circle cx="70.00" cy="301.27" r="3.2" fill="#16a34a"/>
+<circle cx="485.00" cy="224.91" r="3.2" fill="#16a34a"/>
+<circle cx="900.00" cy="191.57" r="3.2" fill="#16a34a"/>
+<polyline fill="none" stroke="#9333ea" stroke-width="2.2" points="70.00,290.70 485.00,209.53 900.00,144.81"/>
+<circle cx="70.00" cy="290.70" r="3.2" fill="#9333ea"/>
+<circle cx="485.00" cy="209.53" r="3.2" fill="#9333ea"/>
+<circle cx="900.00" cy="144.81" r="3.2" fill="#9333ea"/>
+<polyline fill="none" stroke="#ea580c" stroke-width="2.2" points="70.00,276.32 485.00,184.99 900.00,108.85"/>
+<circle cx="70.00" cy="276.32" r="3.2" fill="#ea580c"/>
+<circle cx="485.00" cy="184.99" r="3.2" fill="#ea580c"/>
+<circle cx="900.00" cy="108.85" r="3.2" fill="#ea580c"/>
+<rect x="690" y="39" width="205" height="114" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">p50_ms</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">p90_ms</text>
+<line x1="700" y1="101" x2="716" y2="101" stroke="#16a34a" stroke-width="3"/>
+<text x="722" y="105" font-size="11" font-family="Arial" fill="#111827">p95_ms</text>
+<line x1="700" y1="119" x2="716" y2="119" stroke="#9333ea" stroke-width="3"/>
+<text x="722" y="123" font-size="11" font-family="Arial" fill="#111827">p99_ms</text>
+<line x1="700" y1="137" x2="716" y2="137" stroke="#ea580c" stroke-width="3"/>
+<text x="722" y="141" font-size="11" font-family="Arial" fill="#111827">p999_ms</text>
+</svg></div>
+<h3>Quality Rates</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_core - Quality Rates vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">40</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">120</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">160</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Rate (%)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,205.00 485.00,205.00 900.00,344.28"/>
+<circle cx="70.00" cy="205.00" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="205.00" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="344.28" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,365.00 485.00,365.00 900.00,225.72"/>
+<circle cx="70.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="225.72" r="3.2" fill="#dc2626"/>
+<polyline fill="none" stroke="#16a34a" stroke-width="2.2" points="70.00,365.00 485.00,365.00 900.00,365.00"/>
+<circle cx="70.00" cy="365.00" r="3.2" fill="#16a34a"/>
+<circle cx="485.00" cy="365.00" r="3.2" fill="#16a34a"/>
+<circle cx="900.00" cy="365.00" r="3.2" fill="#16a34a"/>
+<rect x="690" y="39" width="205" height="78" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">success_rate_pct</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">fail_rate_pct</text>
+<line x1="700" y1="101" x2="716" y2="101" stroke="#16a34a" stroke-width="3"/>
+<text x="722" y="105" font-size="11" font-family="Arial" fill="#111827">biz_reject_rate_pct</text>
+</svg></div>
+<h3>Outcome</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_core - Outcome Stacked Counts</text>
+<line x1="70" y1="335.00" x2="900" y2="335.00" stroke="#e5e7eb"/>
+<text x="62" y="339.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="277.00" x2="900" y2="277.00" stroke="#e5e7eb"/>
+<text x="62" y="281.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">4000</text>
+<line x1="70" y1="219.00" x2="900" y2="219.00" stroke="#e5e7eb"/>
+<text x="62" y="223.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">8000</text>
+<line x1="70" y1="161.00" x2="900" y2="161.00" stroke="#e5e7eb"/>
+<text x="62" y="165.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">12000</text>
+<line x1="70" y1="103.00" x2="900" y2="103.00" stroke="#e5e7eb"/>
+<text x="62" y="107.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">16000</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">20000</text>
+<line x1="70" y1="335" x2="900" y2="335" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="335" stroke="#111827"/>
+<rect x="180.33" y="262.50" width="56.00" height="72.50" fill="#16a34a" opacity="0.9"/>
+<text x="208.33" y="351" text-anchor="middle" font-size="10" font-family="Arial" fill="#111827">run1_5000x20</text>
+<rect x="457.00" y="190.00" width="56.00" height="145.00" fill="#16a34a" opacity="0.9"/>
+<text x="485.00" y="351" text-anchor="middle" font-size="10" font-family="Arial" fill="#111827">run2_10000x50</text>
+<rect x="733.67" y="312.47" width="56.00" height="22.53" fill="#16a34a" opacity="0.9"/>
+<rect x="733.67" y="161.00" width="56.00" height="151.47" fill="#dc2626" opacity="0.9"/>
+<text x="761.67" y="351" text-anchor="middle" font-size="10" font-family="Arial" fill="#111827">run3_12000x80</text>
+<rect x="680" y="39" width="215" height="72" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="688" y="53" font-size="12" font-family="Arial" fill="#111827">Outcome</text>
+<rect x="690" y="59" width="12" height="12" fill="#16a34a"/>
+<text x="708" y="69" font-size="11" font-family="Arial" fill="#111827">HTTP/TCP OK</text>
+<rect x="690" y="77" width="12" height="12" fill="#dc2626"/>
+<text x="708" y="87" font-size="11" font-family="Arial" fill="#111827">Request Fail</text>
+<rect x="690" y="95" width="12" height="12" fill="#f59e0b"/>
+<text x="708" y="105" font-size="11" font-family="Arial" fill="#111827">Biz Reject/Error</text>
+</svg></div>
+</div>
+<div class='card'>
+<h2>Dataset: result_gateway</h2>
+<div class='meta'>File: result_gateway.json | target: gateway | started_at_utc: 2026-03-02T08:22:01.596965+00:00</div>
+<table><thead><tr>
+<th>run_name</th>
+<th>concurrency</th>
+<th>total</th>
+<th>ok</th>
+<th>fail</th>
+<th>biz_reject_or_error</th>
+<th>rps</th>
+<th>effective_rps</th>
+<th>success_rate_pct</th>
+<th>fail_rate_pct</th>
+<th>biz_reject_rate_pct</th>
+<th>avg_ms</th>
+<th>p50_ms</th>
+<th>p90_ms</th>
+<th>p95_ms</th>
+<th>p99_ms</th>
+<th>p999_ms</th>
+<th>max_ms</th>
+<th>std_ms</th>
+<th>reject_codes(top)</th>
+</tr></thead><tbody>
+<tr>
+<td class='left'>run1_2000x20</td>
+<td>20</td>
+<td>2000</td>
+<td>1157</td>
+<td>843</td>
+<td>1157</td>
+<td>481.68</td>
+<td>0.00</td>
+<td>57.85</td>
+<td>42.15</td>
+<td>100.00</td>
+<td>23.94</td>
+<td>23.88</td>
+<td>36.07</td>
+<td>40.88</td>
+<td>49.57</td>
+<td>60.59</td>
+<td>84.41</td>
+<td>10.09</td>
+<td class='left'>error_BAD_REQUEST:1157</td>
+</tr>
+<tr>
+<td class='left'>run2_5000x50</td>
+<td>50</td>
+<td>5000</td>
+<td>2432</td>
+<td>2568</td>
+<td>2432</td>
+<td>457.60</td>
+<td>0.00</td>
+<td>48.64</td>
+<td>51.36</td>
+<td>100.00</td>
+<td>52.73</td>
+<td>53.10</td>
+<td>76.92</td>
+<td>85.17</td>
+<td>122.98</td>
+<td>287.29</td>
+<td>327.70</td>
+<td>26.79</td>
+<td class='left'>error_BAD_REQUEST:2145; reject_1002:287</td>
+</tr>
+<tr>
+<td class='left'>run3_8000x80</td>
+<td>80</td>
+<td>8000</td>
+<td>2329</td>
+<td>5671</td>
+<td>2329</td>
+<td>222.50</td>
+<td>0.00</td>
+<td>29.11</td>
+<td>70.89</td>
+<td>100.00</td>
+<td>103.98</td>
+<td>98.55</td>
+<td>134.84</td>
+<td>151.58</td>
+<td>211.78</td>
+<td>878.49</td>
+<td>1106.89</td>
+<td>50.68</td>
+<td class='left'>reject_1002:2113; error_BAD_REQUEST:216</td>
+</tr>
+</tbody></table>
+<h3>RPS</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_gateway - Throughput vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">600</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">800</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">1000</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">RPS</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,210.86 485.00,218.57 900.00,293.80"/>
+<circle cx="70.00" cy="210.86" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="218.57" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="293.80" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,365.00 485.00,365.00 900.00,365.00"/>
+<circle cx="70.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="365.00" r="3.2" fill="#dc2626"/>
+<rect x="690" y="39" width="205" height="60" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">rps</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">effective_rps</text>
+</svg></div>
+<h3>Latency</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_gateway - Latency vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">400</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">600</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">800</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">1000</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Latency (ms)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,357.36 485.00,348.01 900.00,333.46"/>
+<circle cx="70.00" cy="357.36" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="348.01" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="333.46" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,353.46 485.00,340.39 900.00,321.85"/>
+<circle cx="70.00" cy="353.46" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="340.39" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="321.85" r="3.2" fill="#dc2626"/>
+<polyline fill="none" stroke="#16a34a" stroke-width="2.2" points="70.00,351.92 485.00,337.75 900.00,316.49"/>
+<circle cx="70.00" cy="351.92" r="3.2" fill="#16a34a"/>
+<circle cx="485.00" cy="337.75" r="3.2" fill="#16a34a"/>
+<circle cx="900.00" cy="316.49" r="3.2" fill="#16a34a"/>
+<polyline fill="none" stroke="#9333ea" stroke-width="2.2" points="70.00,349.14 485.00,325.65 900.00,297.23"/>
+<circle cx="70.00" cy="349.14" r="3.2" fill="#9333ea"/>
+<circle cx="485.00" cy="325.65" r="3.2" fill="#9333ea"/>
+<circle cx="900.00" cy="297.23" r="3.2" fill="#9333ea"/>
+<polyline fill="none" stroke="#ea580c" stroke-width="2.2" points="70.00,345.61 485.00,273.07 900.00,83.88"/>
+<circle cx="70.00" cy="345.61" r="3.2" fill="#ea580c"/>
+<circle cx="485.00" cy="273.07" r="3.2" fill="#ea580c"/>
+<circle cx="900.00" cy="83.88" r="3.2" fill="#ea580c"/>
+<rect x="690" y="39" width="205" height="114" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">p50_ms</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">p90_ms</text>
+<line x1="700" y1="101" x2="716" y2="101" stroke="#16a34a" stroke-width="3"/>
+<text x="722" y="105" font-size="11" font-family="Arial" fill="#111827">p95_ms</text>
+<line x1="700" y1="119" x2="716" y2="119" stroke="#9333ea" stroke-width="3"/>
+<text x="722" y="123" font-size="11" font-family="Arial" fill="#111827">p99_ms</text>
+<line x1="700" y1="137" x2="716" y2="137" stroke="#ea580c" stroke-width="3"/>
+<text x="722" y="141" font-size="11" font-family="Arial" fill="#111827">p999_ms</text>
+</svg></div>
+<h3>Quality Rates</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_gateway - Quality Rates vs Concurrency</text>
+<line x1="70" y1="365.00" x2="900" y2="365.00" stroke="#e5e7eb"/>
+<text x="62" y="369.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="301.00" x2="900" y2="301.00" stroke="#e5e7eb"/>
+<text x="62" y="305.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">40</text>
+<line x1="70" y1="237.00" x2="900" y2="237.00" stroke="#e5e7eb"/>
+<text x="62" y="241.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="173.00" x2="900" y2="173.00" stroke="#e5e7eb"/>
+<text x="62" y="177.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">120</text>
+<line x1="70" y1="109.00" x2="900" y2="109.00" stroke="#e5e7eb"/>
+<text x="62" y="113.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">160</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">200</text>
+<line x1="70.00" y1="45" x2="70.00" y2="365" stroke="#f3f4f6"/>
+<text x="70.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">20</text>
+<line x1="485.00" y1="45" x2="485.00" y2="365" stroke="#f3f4f6"/>
+<text x="485.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">50</text>
+<line x1="900.00" y1="45" x2="900.00" y2="365" stroke="#f3f4f6"/>
+<text x="900.00" y="383" text-anchor="middle" font-size="11" font-family="Arial" fill="#374151">80</text>
+<line x1="70" y1="365" x2="900" y2="365" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="365" stroke="#111827"/>
+<text x="485.00" y="406" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Concurrency</text>
+<text x="16" y="205.00" transform="rotate(-90 16 205.00)" text-anchor="middle" font-size="12" font-family="Arial" fill="#111827">Rate (%)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="2.2" points="70.00,272.44 485.00,287.18 900.00,318.42"/>
+<circle cx="70.00" cy="272.44" r="3.2" fill="#2563eb"/>
+<circle cx="485.00" cy="287.18" r="3.2" fill="#2563eb"/>
+<circle cx="900.00" cy="318.42" r="3.2" fill="#2563eb"/>
+<polyline fill="none" stroke="#dc2626" stroke-width="2.2" points="70.00,297.56 485.00,282.82 900.00,251.58"/>
+<circle cx="70.00" cy="297.56" r="3.2" fill="#dc2626"/>
+<circle cx="485.00" cy="282.82" r="3.2" fill="#dc2626"/>
+<circle cx="900.00" cy="251.58" r="3.2" fill="#dc2626"/>
+<polyline fill="none" stroke="#16a34a" stroke-width="2.2" points="70.00,205.00 485.00,205.00 900.00,205.00"/>
+<circle cx="70.00" cy="205.00" r="3.2" fill="#16a34a"/>
+<circle cx="485.00" cy="205.00" r="3.2" fill="#16a34a"/>
+<circle cx="900.00" cy="205.00" r="3.2" fill="#16a34a"/>
+<rect x="690" y="39" width="205" height="78" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="698" y="53" font-size="12" font-family="Arial" fill="#111827">Legend</text>
+<line x1="700" y1="65" x2="716" y2="65" stroke="#2563eb" stroke-width="3"/>
+<text x="722" y="69" font-size="11" font-family="Arial" fill="#111827">success_rate_pct</text>
+<line x1="700" y1="83" x2="716" y2="83" stroke="#dc2626" stroke-width="3"/>
+<text x="722" y="87" font-size="11" font-family="Arial" fill="#111827">fail_rate_pct</text>
+<line x1="700" y1="101" x2="716" y2="101" stroke="#16a34a" stroke-width="3"/>
+<text x="722" y="105" font-size="11" font-family="Arial" fill="#111827">biz_reject_rate_pct</text>
+</svg></div>
+<h3>Outcome</h3>
+<div class='svg-wrap'><svg xmlns="http://www.w3.org/2000/svg" width="920" height="420">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="70" y="24" font-size="18" font-family="Arial" fill="#111827">result_gateway - Outcome Stacked Counts</text>
+<line x1="70" y1="335.00" x2="900" y2="335.00" stroke="#e5e7eb"/>
+<text x="62" y="339.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">0</text>
+<line x1="70" y1="277.00" x2="900" y2="277.00" stroke="#e5e7eb"/>
+<text x="62" y="281.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">4000</text>
+<line x1="70" y1="219.00" x2="900" y2="219.00" stroke="#e5e7eb"/>
+<text x="62" y="223.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">8000</text>
+<line x1="70" y1="161.00" x2="900" y2="161.00" stroke="#e5e7eb"/>
+<text x="62" y="165.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">12000</text>
+<line x1="70" y1="103.00" x2="900" y2="103.00" stroke="#e5e7eb"/>
+<text x="62" y="107.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">16000</text>
+<line x1="70" y1="45.00" x2="900" y2="45.00" stroke="#e5e7eb"/>
+<text x="62" y="49.00" text-anchor="end" font-size="11" font-family="Arial" fill="#374151">20000</text>
+<line x1="70" y1="335" x2="900" y2="335" stroke="#111827"/>
+<line x1="70" y1="45" x2="70" y2="335" stroke="#111827"/>
+<rect x="180.33" y="318.22" width="56.00" height="16.78" fill="#16a34a" opacity="0.9"/>
+<rect x="180.33" y="306.00" width="56.00" height="12.22" fill="#dc2626" opacity="0.9"/>
+<rect x="180.33" y="289.22" width="56.00" height="16.78" fill="#f59e0b" opacity="0.9"/>
+<text x="208.33" y="351" text-anchor="middle" font-size="10" font-family="Arial" fill="#111827">run1_2000x20</text>
+<rect x="457.00" y="299.74" width="56.00" height="35.26" fill="#16a34a" opacity="0.9"/>
+<rect x="457.00" y="262.50" width="56.00" height="37.24" fill="#dc2626" opacity="0.9"/>
+<rect x="457.00" y="227.24" width="56.00" height="35.26" fill="#f59e0b" opacity="0.9"/>
+<text x="485.00" y="351" text-anchor="middle" font-size="10" font-family="Arial" fill="#111827">run2_5000x50</text>
+<rect x="733.67" y="301.23" width="56.00" height="33.77" fill="#16a34a" opacity="0.9"/>
+<rect x="733.67" y="219.00" width="56.00" height="82.23" fill="#dc2626" opacity="0.9"/>
+<rect x="733.67" y="185.23" width="56.00" height="33.77" fill="#f59e0b" opacity="0.9"/>
+<text x="761.67" y="351" text-anchor="middle" font-size="10" font-family="Arial" fill="#111827">run3_8000x80</text>
+<rect x="680" y="39" width="215" height="72" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="688" y="53" font-size="12" font-family="Arial" fill="#111827">Outcome</text>
+<rect x="690" y="59" width="12" height="12" fill="#16a34a"/>
+<text x="708" y="69" font-size="11" font-family="Arial" fill="#111827">HTTP/TCP OK</text>
+<rect x="690" y="77" width="12" height="12" fill="#dc2626"/>
+<text x="708" y="87" font-size="11" font-family="Arial" fill="#111827">Request Fail</text>
+<rect x="690" y="95" width="12" height="12" fill="#f59e0b"/>
+<text x="708" y="105" font-size="11" font-family="Arial" fill="#111827">Biz Reject/Error</text>
+</svg></div>
+</div>
+</body></html>
