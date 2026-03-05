@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 模拟股票交易对敲撮合系统</h1>
+            <nav>
+                <a href="index.html" class="nav-link active">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易下单</a>
+                <a href="orders.html" class="nav-link">订单历史</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+                <a href="user-analysis.html" class="nav-link">用户分析</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="dashboard">
+                <h2>系统概览</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>服务状态</h3>
+                        <div id="service-status" class="status-loading">检查中...</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>用户总数</h3>
+                        <div id="user-count" class="stat-value">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>今日订单</h3>
+                        <div id="today-orders" class="stat-value">-</div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>快速操作</h3>
+                    <div class="action-buttons">
+                        <button onclick="location.href='users.html'" class="btn btn-primary">创建用户</button>
+                        <button onclick="location.href='trading.html'" class="btn btn-success">下单交易</button>
+                        <button onclick="location.href='orders.html'" class="btn btn-info">查看历史</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>系统说明</h3>
+                    <ul>
+                        <li><strong>市场代码</strong>：XSHG（上交所）、XSHE（深交所）、BJSE（北交所）</li>
+                        <li><strong>买卖方向</strong>：B（买）、S（卖）</li>
+                        <li><strong>对敲风控</strong>：同一股东号下同市场同证券不能同时存在未成交的买与卖</li>
+                        <li><strong>API 地址</strong>：Admin (http://localhost:8080)、Core (http://localhost:8081)</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
