@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 一键启动脚本生成 ###
+.trading-system.pids
+logs-admin.log
+logs-core.log
+logs-gateway.log
