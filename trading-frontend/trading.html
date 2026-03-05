@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交易下单 - 模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 模拟股票交易对敲撮合系统</h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link active">交易下单</a>
+                <a href="orders.html" class="nav-link">订单历史</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="trading">
+                <h2>交易下单</h2>
+
+                <!-- 下单表单 -->
+                <div class="card">
+                    <h3>下单</h3>
+                    <p class="info-text">系统将自动生成订单号，下单成功后会返回订单编号。</p>
+                    <form id="place-order-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="shareholderId">股东号:</label>
+                                <input type="text" id="shareholderId" name="shareholderId" required maxlength="10" placeholder="如: SH00000001">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="market">市场:</label>
+                                <select id="market" name="market" required>
+                                    <option value="">请选择</option>
+                                    <option value="XSHG">XSHG - 上交所</option>
+                                    <option value="XSHE">XSHE - 深交所</option>
+                                    <option value="BJSE">BJSE - 北交所</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="securityId">股票代码:</label>
+                                <input type="text" id="securityId" name="securityId" required maxlength="6" placeholder="如: 600030">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="side">买卖方向:</label>
+                                <select id="side" name="side" required>
+                                    <option value="">请选择</option>
+                                    <option value="B">B - 买</option>
+                                    <option value="S">S - 卖</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="qty">数量:</label>
+                                <input type="number" id="qty" name="qty" required min="1" placeholder="如: 100">
+                            </div>
+                            <div class="form-group">
+                                <label for="price">价格:</label>
+                                <input type="number" id="price" name="price" required min="0.01" step="0.01" placeholder="如: 10.5">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">提交订单</button>
+                    </form>
+                    <div id="place-order-result" class="result-message"></div>
+                </div>
+
+                <!-- 撤单表单 -->
+                <div class="card">
+                    <h3>撤单</h3>
+                    <p class="info-text">系统将自动生成撤单号，您只需输入要撤的订单编号（下单时返回的订单号）。</p>
+                    <form id="cancel-order-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="origClOrderId">原订单编号 (origClOrderId):</label>
+                                <input type="text" id="origClOrderId" name="origClOrderId" required maxlength="64" placeholder="输入要撤的订单编号（如: ORD12345678901234）">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">提交撤单</button>
+                    </form>
+                    <div id="cancel-order-result" class="result-message"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/trading.js"></script>
+</body>
+</html>
