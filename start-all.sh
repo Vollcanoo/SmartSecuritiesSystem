@@ -78,12 +78,12 @@ wait_for_port() {
   return 1
 }
 
-# 1. 打包（clean 确保使用最新代码，跳过测试）
-echo "========== 1/4 编译打包 =========="
-if ! mvn clean package -DskipTests -q -pl trading-common,trading-protocol,trading-admin,trading-core,trading-gateway -am 2>/dev/null; then
-  echo "打包失败。若因缺少 exchange-core 导致 trading-core 编译失败，可先只打包其他模块："
-  echo "  mvn clean package -DskipTests -q -pl trading-common,trading-protocol,trading-admin,trading-gateway -am"
-  echo "然后修改本脚本，注释掉 trading-core 与 trading-gateway 的启动部分后再执行。"
+# 1. 打包（clean 确保使用最新代码，跳过测试，排除 exchange-core）
+echo "========== 1/4 编译打包 (排除 exchange-core) =========="
+echo "注意：请确保 exchange-core 已手动安装到本地 Maven 仓库 (mvn install)"
+if ! mvn clean package -DskipTests -pl trading-common,trading-protocol,trading-admin,trading-core,trading-gateway -am; then
+  echo "打包失败。"
+  echo "如果提示找不到 exchange-core，请先进入 exchange-core 目录执行 mvn install。"
   exit 1
 fi
 
