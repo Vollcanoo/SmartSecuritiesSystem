@@ -1,46 +1,58 @@
 @echo off
-chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
-REM 要求：JDK 17；MySQL 已启动并已创建数据库 trading_admin
 
-echo ========== 一键启动 trading-system ==========
+echo ==========================================
+echo    Trading System Startup Script
+echo ==========================================
 
+:: Check if pom.xml exists
 if not exist "pom.xml" (
-  echo 错误：请在项目根目录下执行 start-all.bat
-  pause
-  exit /b 1
+    echo [ERROR] Please run this script in the project root directory!
+    pause
+    exit /b 1
 )
 
-echo.
-echo [1/4] 编译打包...
-call mvn package -DskipTests -q -pl trading-common,trading-protocol,trading-admin,trading-core,trading-gateway -am
+:: 1. Maven Build
+echo [1/5] Building modules (excluding exchange-core)...
+call mvn clean package -DskipTests -pl trading-common,trading-protocol,trading-admin,trading-core,trading-gateway -am
 if errorlevel 1 (
-  echo 打包失败。
-  pause
-  exit /b 1
+    echo [ERROR] Maven build failed!
+    pause
+    exit /b 1
 )
 
 set VERSION=1.0.0-SNAPSHOT
-echo.
-echo [2/4] 启动 trading-admin (端口 8080, MySQL)...
+
+:: 2. Start Admin (Port 8080)
+echo [2/5] Starting trading-admin...
 start "trading-admin" java -jar "trading-admin\target\trading-admin-%VERSION%.jar"
 timeout /t 15 /nobreak >nul
 
-echo [3/4] 启动 trading-core (端口 8081)...
-start "trading-core" java --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -jar "trading-core\target\trading-core-%VERSION%.jar"
+:: 3. Start Core (Port 8081)
+echo [3/5] Starting trading-core...
+set CORE_OPTS=--add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
+start "trading-core" java %CORE_OPTS% -jar "trading-core\target\trading-core-%VERSION%.jar"
 timeout /t 25 /nobreak >nul
 
-echo [4/4] 启动 trading-gateway (端口 9000)...
+:: 4. Start Gateway (Port 9000)
+echo [4/5] Starting trading-gateway...
 start "trading-gateway" java -jar "trading-gateway\target\trading-gateway-%VERSION%.jar"
 timeout /t 10 /nobreak >nul
 
+:: 5. Start Frontend Server (Port 8000)
+echo [5/5] Starting frontend server via Python...
+:: Try 'python' first, then 'python3' if python fails
+start "trading-frontend" /D "trading-frontend" cmd /c "python -m http.server 8000 || python3 -m http.server 8000"
+timeout /t 3 /nobreak >nul
+
 echo.
-echo ========== 全部服务已在新窗口中启动 ==========
-echo   trading-admin:  http://localhost:8080
-echo   trading-core:   http://localhost:8081
-echo   trading-gateway: TCP localhost:9000
-echo.
-echo 关闭对应窗口即可停止该服务；或运行 stop-all.bat 结束所有 Java 进程。
+echo ==========================================
+echo    All services started!
+echo    Admin:    http://localhost:8080
+echo    Core:     http://localhost:8081
+echo    Gateway:  TCP 9000
+echo    Frontend: http://localhost:8000
+echo ==========================================
 echo.
 pause
