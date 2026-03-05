@@ -1,5 +1,0 @@
-dataset,file_name,target,run_name,total,concurrency,ok,fail,biz_reject_or_error,elapsed_sec,rps,effective_ok,effective_rps,success_rate_pct,fail_rate_pct,biz_reject_rate_pct,avg_ms,p50_ms,p90_ms,p95_ms,p99_ms,p999_ms,max_ms,std_ms,reject_codes
-result_mysql_business_multi_20260304,result_mysql_business_multi_20260304.json,unknown,run1_3000x20,3000,20,3000,0,0,30.183,99.39,3000,99.39,100.0,0.0,0.0,199.47,173.71,401.43,507.53,730.57,1085.26,1165.35,164.66,{}
-result_mysql_business_multi_20260304,result_mysql_business_multi_20260304.json,unknown,run2_6000x40,6000,40,6000,0,0,9.53,629.57,6000,629.57,100.0,0.0,0.0,62.76,58.26,83.85,100.0,158.33,296.53,444.06,24.02,{}
-result_mysql_business_multi_20260304,result_mysql_business_multi_20260304.json,unknown,run3_12000x80,12000,80,12000,0,0,16.942,708.3,12000,708.3,100.0,0.0,0.0,111.55,106.91,151.17,172.88,213.7,272.87,341.23,32.48,{}
-result_mysql_business_multi_20260304,result_mysql_business_multi_20260304.json,unknown,run4_18000x120,18000,120,6929,11071,0,54.425,127.31,6929,127.31,38.49,61.51,0.0,360.65,324.82,574.25,682.93,906.07,1266.83,1589.48,163.04,{}
