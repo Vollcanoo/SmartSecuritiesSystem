@@ -1,4 +1,6 @@
 target/
+!target/*.jar
+!target/*/*.jar
 delombok/
 .mvn/
 
