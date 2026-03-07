@@ -1,0 +1,18 @@
+# 使用 H2 内存数据库，无需安装 MySQL，适合一键启动与本地演示
+# schema.sql 为 MySQL 语法，H2 不兼容，故关闭 SQL 初始化，由 JPA ddl-auto=update 自动建表
+spring:
+  sql:
+    init:
+      mode: never
+  datasource:
+    url: jdbc:h2:mem:trading_admin;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect

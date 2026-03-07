@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>äº¤æä¸å - æ¨¡æè¡ç¥¨äº¤æå¯¹æ²æ®åç³»ç»</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ð æ¨¡æè¡ç¥¨äº¤æå¯¹æ²æ®åç³»ç»</h1>
+            <nav>
+                <a href="index.html" class="nav-link">æ¦è§</a>
+                <a href="users.html" class="nav-link">ç¨æ·ç®¡ç</a>
+                <a href="trading.html" class="nav-link active">äº¤æä¸å</a>
+                <a href="orders.html" class="nav-link">è®¢ååå²</a>
+                <a href="open-orders.html" class="nav-link">å½åæå</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="trading">
+                <h2>äº¤æä¸å</h2>
+
+                <!-- ä¸åè¡¨å -->
+                <div class="card">
+                    <h3>ä¸å</h3>
+                    <p class="info-text">ç³»ç»å°èªå¨çæè®¢åå·ï¼ä¸åæååä¼è¿åè®¢åç¼å·ã</p>
+                    <form id="place-order-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="shareholderId">è¡ä¸å·:</label>
+                                <input type="text" id="shareholderId" name="shareholderId" required maxlength="10" placeholder="å¦: SH00000001">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="market">å¸åº:</label>
+                                <select id="market" name="market" required>
+                                    <option value="">è¯·éæ©</option>
+                                    <option value="XSHG">XSHG - ä¸äº¤æ</option>
+                                    <option value="XSHE">XSHE - æ·±äº¤æ</option>
+                                    <option value="BJSE">BJSE - åäº¤æ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="securityId">è¡ç¥¨ä»£ç :</label>
+                                <input type="text" id="securityId" name="securityId" required maxlength="6" placeholder="å¦: 600030">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="side">ä¹°åæ¹å:</label>
+                                <select id="side" name="side" required>
+                                    <option value="">è¯·éæ©</option>
+                                    <option value="B">B - ä¹°</option>
+                                    <option value="S">S - å</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="qty">æ°é:</label>
+                                <input type="number" id="qty" name="qty" required min="1" placeholder="å¦: 100">
+                            </div>
+                            <div class="form-group">
+                                <label for="price">ä»·æ ¼:</label>
+                                <input type="number" id="price" name="price" required min="0.01" step="0.01" placeholder="å¦: 10.5">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">æäº¤è®¢å</button>
+                    </form>
+                    <div id="place-order-result" class="result-message"></div>
+                </div>
+
+                <!-- æ¤åè¡¨å -->
+                <div class="card">
+                    <h3>æ¤å</h3>
+                    <p class="info-text">ç³»ç»å°èªå¨çææ¤åå·ï¼æ¨åªéè¾å¥è¦æ¤çè®¢åç¼å·ï¼ä¸åæ¶è¿åçè®¢åå·ï¼ã</p>
+                    <form id="cancel-order-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="origClOrderId">åè®¢åç¼å· (origClOrderId):</label>
+                                <input type="text" id="origClOrderId" name="origClOrderId" required maxlength="64" placeholder="è¾å¥è¦æ¤çè®¢åç¼å·ï¼å¦: ORD12345678901234ï¼">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">æäº¤æ¤å</button>
+                    </form>
+                    <div id="cancel-order-result" class="result-message"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>æ¨¡æè¡ç¥¨äº¤æå¯¹æ²æ®åç³»ç» Â© 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/trading.js"></script>
+</body>
+</html>
+

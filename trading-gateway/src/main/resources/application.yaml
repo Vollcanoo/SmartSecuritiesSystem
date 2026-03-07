@@ -1,0 +1,25 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: trading-gateway
+
+# 网关：客户端连接端口、Core 地址
+trading:
+  gateway:
+    port: 9000
+    core-base-url: http://localhost:8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    com.trading: INFO

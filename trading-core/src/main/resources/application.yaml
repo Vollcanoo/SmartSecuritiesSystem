@@ -1,0 +1,28 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: trading-core
+
+# Admin 地址与鉴权（多机部署时请修改 base-url；internal-token 需与 Admin 配置一致）
+trading:
+  admin:
+    base-url: ${ADMIN_BASE_URL:http://localhost:8080}
+    internal-token: ${INTERNAL_TOKEN:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    com.trading: INFO
+    # 排查成交/挂单时可临时改为 DEBUG
+    # com.trading.core.service.TradeEventProcessor: DEBUG
+    exchange.core2: WARN

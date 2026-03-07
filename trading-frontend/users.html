@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - 模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 模拟股票交易对敲撮合系统</h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link active">用户管理</a>
+                <a href="trading.html" class="nav-link">交易下单</a>
+                <a href="orders.html" class="nav-link">订单历史</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="user-management">
+                <h2>用户管理</h2>
+
+                <!-- 创建用户表单 -->
+                <div class="card">
+                    <h3>创建用户</h3>
+                    <p class="info-text">系统将自动生成用户ID和股东号，您只需输入用户名。</p>
+                    <form id="create-user-form" class="form">
+                        <div class="form-group">
+                            <label for="username">用户名:</label>
+                            <input type="text" id="username" name="username" required maxlength="50" placeholder="请输入用户名（不能重复）">
+                        </div>
+                        <button type="submit" class="btn btn-primary">创建用户</button>
+                    </form>
+                    <div id="create-user-result" class="result-message"></div>
+                </div>
+
+                <!-- 用户列表 -->
+                <div class="card">
+                    <h3>用户列表</h3>
+                    <div class="toolbar">
+                        <button onclick="loadUsers()" class="btn btn-secondary">刷新</button>
+                        <input type="text" id="search-shareholder" placeholder="搜索股东号..." onkeyup="filterUsers()">
+                    </div>
+                    <div id="users-list" class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>用户ID</th>
+                                    <th>股东号</th>
+                                    <th>用户名</th>
+                                    <th>状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <tr><td colspan="6" class="loading">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 修改用户名对话框 -->
+                <div id="edit-username-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <h3>修改用户名</h3>
+                        <form id="edit-username-form" class="form">
+                            <input type="hidden" id="edit-uid" name="uid">
+                            <div class="form-group">
+                                <label for="edit-username">新用户名:</label>
+                                <input type="text" id="edit-username" name="username" required maxlength="50">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">取消</button>
+                            </div>
+                        </form>
+                        <div id="edit-username-result" class="result-message"></div>
+                    </div>
+                </div>
+
+                <!-- 查询余额对话框 -->
+                <div id="balance-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <h3>用户余额</h3>
+                        <div id="balance-info" class="balance-info">
+                            <p>加载中...</p>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" onclick="closeBalanceModal()" class="btn btn-secondary">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/users.js"></script>
+</body>
+</html>
