@@ -1,7 +1,7 @@
 // 用户交易分析逻辑
 
-let ordersPerDayChart = null;
-let turnoverPerDayChart = null;
+let ordersSummaryChart = null;
+let incomeExpenseChart = null;
 
 function formatToBackendDateTimeLocal(value) {
     // datetime-local: "2026-03-02T12:34"
@@ -12,6 +12,16 @@ function formatToBackendDateTimeLocal(value) {
         return value + ':00';
     }
     return value;
+}
+
+function toDatetimeLocalValue(date) {
+    const pad = (n) => n.toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hour = pad(date.getHours());
+    const minute = pad(date.getMinutes());
+    return `${year}-${month}-${day}T${hour}:${minute}`;
 }
 
 function setAnalysisLoading(loading) {
@@ -93,61 +103,73 @@ function renderAnalysisStats(data) {
 
 function renderAnalysisCharts(data) {
     const emptyTip = document.getElementById('analysis-chart-empty');
-    const ordersCanvas = document.getElementById('chart-orders-per-day');
-    const turnoverCanvas = document.getElementById('chart-turnover-per-day');
+    const ordersCanvas = document.getElementById('chart-orders-summary');
+    const incomeExpenseCanvas = document.getElementById('chart-income-expense');
 
-    if (!ordersCanvas || !turnoverCanvas || typeof Chart === 'undefined') {
+    if (!ordersCanvas || !incomeExpenseCanvas || typeof Chart === 'undefined') {
         return;
     }
 
-    if (!data || !Array.isArray(data.dailyStats) || data.dailyStats.length === 0) {
-        if (ordersPerDayChart) {
-            ordersPerDayChart.destroy();
-            ordersPerDayChart = null;
+    if (!data) {
+        if (ordersSummaryChart) {
+            ordersSummaryChart.destroy();
+            ordersSummaryChart = null;
         }
-        if (turnoverPerDayChart) {
-            turnoverPerDayChart.destroy();
-            turnoverPerDayChart = null;
+        if (incomeExpenseChart) {
+            incomeExpenseChart.destroy();
+            incomeExpenseChart = null;
         }
         if (emptyTip) {
             emptyTip.style.display = 'block';
-            emptyTip.textContent = '当前时间区间内没有可绘制的时间序列数据。';
+            emptyTip.textContent = '当前时间区间内没有可绘制的可视化数据。';
         }
         return;
     }
 
-    const labels = data.dailyStats.map(p => p.date);
-    const totalOrdersSeries = data.dailyStats.map(p => p.totalOrders ?? 0);
-    const filledOrdersSeries = data.dailyStats.map(p => p.filledOrders ?? 0);
-    const cancelledOrdersSeries = data.dailyStats.map(p => p.cancelledOrders ?? 0);
-    const turnoverSeries = data.dailyStats.map(p => Number(p.totalTurnover || 0));
+    const totalOrders = Number(data.totalOrders || 0);
+    const filledOrders = Number(data.filledOrders || 0);
+    const cancelledOrders = Number(data.cancelledOrders || 0);
+
+    // 若三个值全为 0，则认为没有可视化意义
+    if (totalOrders === 0 && filledOrders === 0 && cancelledOrders === 0) {
+        if (ordersSummaryChart) {
+            ordersSummaryChart.destroy();
+            ordersSummaryChart = null;
+        }
+        if (incomeExpenseChart) {
+            incomeExpenseChart.destroy();
+            incomeExpenseChart = null;
+        }
+        if (emptyTip) {
+            emptyTip.style.display = 'block';
+            emptyTip.textContent = '当前时间区间内没有可绘制的可视化数据。';
+        }
+        return;
+    }
+
+    const labels = ['订单总数', '成交订单数', '撤单订单数'];
+    const values = [totalOrders, filledOrders, cancelledOrders];
 
     if (emptyTip) {
         emptyTip.style.display = 'none';
     }
 
-    if (ordersPerDayChart) {
-        ordersPerDayChart.destroy();
+    if (ordersSummaryChart) {
+        ordersSummaryChart.destroy();
     }
-    ordersPerDayChart = new Chart(ordersCanvas.getContext('2d'), {
+    ordersSummaryChart = new Chart(ordersCanvas.getContext('2d'), {
         type: 'bar',
         data: {
             labels,
             datasets: [
                 {
-                    label: '订单总数',
-                    data: totalOrdersSeries,
-                    backgroundColor: 'rgba(102, 126, 234, 0.8)'
-                },
-                {
-                    label: '成交订单数',
-                    data: filledOrdersSeries,
-                    backgroundColor: 'rgba(72, 187, 120, 0.7)'
-                },
-                {
-                    label: '撤单订单数',
-                    data: cancelledOrdersSeries,
-                    backgroundColor: 'rgba(245, 101, 101, 0.7)'
+                    label: '订单数量',
+                    data: values,
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(72, 187, 120, 0.8)',
+                        'rgba(245, 101, 101, 0.8)'
+                    ]
                 }
             ]
         },
@@ -158,7 +180,7 @@ function renderAnalysisCharts(data) {
                 x: {
                     title: {
                         display: true,
-                        text: '日期'
+                        text: '指标'
                     }
                 },
                 y: {
@@ -177,19 +199,51 @@ function renderAnalysisCharts(data) {
         }
     });
 
-    if (turnoverPerDayChart) {
-        turnoverPerDayChart.destroy();
+    // 绘制“总支出 / 总收入”随时间的折线图（使用 dailyStats）
+    if (!Array.isArray(data.dailyStats) || data.dailyStats.length === 0) {
+        if (incomeExpenseChart) {
+            incomeExpenseChart.destroy();
+            incomeExpenseChart = null;
+        }
+        return;
     }
-    turnoverPerDayChart = new Chart(turnoverCanvas.getContext('2d'), {
+
+    const dateLabels = data.dailyStats.map(p => p.date);
+    const incomeSeries = data.dailyStats.map(p => Number(p.totalIncome || 0));
+    const expenseSeries = data.dailyStats.map(p => Number(p.totalExpense || 0));
+
+    const hasIncome = incomeSeries.some(v => v !== 0);
+    const hasExpense = expenseSeries.some(v => v !== 0);
+
+    if (!hasIncome && !hasExpense) {
+        if (incomeExpenseChart) {
+            incomeExpenseChart.destroy();
+            incomeExpenseChart = null;
+        }
+        return;
+    }
+
+    if (incomeExpenseChart) {
+        incomeExpenseChart.destroy();
+    }
+    incomeExpenseChart = new Chart(incomeExpenseCanvas.getContext('2d'), {
         type: 'line',
         data: {
-            labels,
+            labels: dateLabels,
             datasets: [
                 {
-                    label: '每日成交金额',
-                    data: turnoverSeries,
+                    label: '总收入（卖出）',
+                    data: incomeSeries,
                     borderColor: 'rgba(72, 187, 120, 1)',
-                    backgroundColor: 'rgba(72, 187, 120, 0.2)',
+                    backgroundColor: 'rgba(72, 187, 120, 0.15)',
+                    tension: 0.2,
+                    fill: true
+                },
+                {
+                    label: '总支出（买入）',
+                    data: expenseSeries,
+                    borderColor: 'rgba(245, 101, 101, 1)',
+                    backgroundColor: 'rgba(245, 101, 101, 0.15)',
                     tension: 0.2,
                     fill: true
                 }
@@ -209,7 +263,7 @@ function renderAnalysisCharts(data) {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: '成交金额'
+                        text: '金额'
                     }
                 }
             },
@@ -226,19 +280,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('analysis-form');
     if (!form) return;
 
+    const rangeSelect = document.getElementById('analysis-range');
+    const startInput = document.getElementById('analysis-start');
+    const endInput = document.getElementById('analysis-end');
+
+    function applyRange(value) {
+        if (!value) {
+            startInput.value = '';
+            endInput.value = '';
+            return;
+        }
+        const now = new Date();
+        const end = new Date(now);
+        const start = new Date(now);
+
+        switch (value) {
+            case '7d':
+                start.setDate(start.getDate() - 7);
+                break;
+            case '1m':
+                start.setMonth(start.getMonth() - 1);
+                break;
+            case '3m':
+                start.setMonth(start.getMonth() - 3);
+                break;
+            case '6m':
+                start.setMonth(start.getMonth() - 6);
+                break;
+            case '1y':
+                start.setFullYear(start.getFullYear() - 1);
+                break;
+            default:
+                break;
+        }
+
+        startInput.value = toDatetimeLocalValue(start);
+        endInput.value = toDatetimeLocalValue(end);
+    }
+
+    if (rangeSelect) {
+        rangeSelect.addEventListener('change', (e) => {
+            applyRange(e.target.value);
+        });
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const uidInput = document.getElementById('analysis-uid');
-        const startInput = document.getElementById('analysis-start');
-        const endInput = document.getElementById('analysis-end');
+        const selectedRange = rangeSelect ? rangeSelect.value : '';
 
         const uid = uidInput.value.trim();
         const start = formatToBackendDateTimeLocal(startInput.value);
         const end = formatToBackendDateTimeLocal(endInput.value);
 
-        if (!uid || !start || !end) {
-            showAnalysisMessage('请完整填写用户ID和时间范围。', 'error');
+        if (!uid || !selectedRange || !start || !end) {
+            showAnalysisMessage('请填写用户ID并选择时间范围。', 'error');
             return;
         }
 

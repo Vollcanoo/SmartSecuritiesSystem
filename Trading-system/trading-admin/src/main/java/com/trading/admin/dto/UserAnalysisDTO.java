@@ -89,6 +89,10 @@ public class UserAnalysisDTO {
         private Long cancelledOrders;
         /** 当日成交总金额 */
         private BigDecimal totalTurnover;
+        /** 当日总收入（卖出成交金额之和） */
+        private BigDecimal totalIncome;
+        /** 当日总支出（买入成交金额之和） */
+        private BigDecimal totalExpense;
 
         public String getDate() {
             return date;
@@ -128,6 +132,22 @@ public class UserAnalysisDTO {
 
         public void setTotalTurnover(BigDecimal totalTurnover) {
             this.totalTurnover = totalTurnover;
+        }
+
+        public BigDecimal getTotalIncome() {
+            return totalIncome;
+        }
+
+        public void setTotalIncome(BigDecimal totalIncome) {
+            this.totalIncome = totalIncome;
+        }
+
+        public BigDecimal getTotalExpense() {
+            return totalExpense;
+        }
+
+        public void setTotalExpense(BigDecimal totalExpense) {
+            this.totalExpense = totalExpense;
         }
     }
 }

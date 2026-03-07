@@ -104,6 +104,16 @@ public class UserAnalysisService {
                 BigDecimal amount = BigDecimal.valueOf(price)
                         .multiply(BigDecimal.valueOf(filledQty));
                 agg.totalTurnover = agg.totalTurnover.add(amount);
+
+                // 按买卖方向拆分为收入 / 支出
+                String side = order.getSide();
+                if ("S".equalsIgnoreCase(side)) {
+                    // 卖出视为收入
+                    agg.totalIncome = agg.totalIncome.add(amount);
+                } else if ("B".equalsIgnoreCase(side)) {
+                    // 买入视为支出
+                    agg.totalExpense = agg.totalExpense.add(amount);
+                }
             }
         }
 
@@ -120,6 +130,8 @@ public class UserAnalysisService {
                     stat.setFilledOrders(agg.filledOrders);
                     stat.setCancelledOrders(agg.cancelledOrders);
                     stat.setTotalTurnover(agg.totalTurnover);
+                    stat.setTotalIncome(agg.totalIncome);
+                    stat.setTotalExpense(agg.totalExpense);
 
                     dailyStats.add(stat);
                 });
@@ -137,5 +149,7 @@ public class UserAnalysisService {
         private long filledOrders = 0L;
         private long cancelledOrders = 0L;
         private BigDecimal totalTurnover = BigDecimal.ZERO;
+        private BigDecimal totalIncome = BigDecimal.ZERO;
+        private BigDecimal totalExpense = BigDecimal.ZERO;
     }
 }
