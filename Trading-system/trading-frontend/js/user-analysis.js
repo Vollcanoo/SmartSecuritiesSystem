@@ -1,5 +1,8 @@
 // 用户交易分析逻辑
 
+let ordersPerDayChart = null;
+let turnoverPerDayChart = null;
+
 function formatToBackendDateTimeLocal(value) {
     // datetime-local: "2026-03-02T12:34"
     // 后端 LocalDateTime.parse 期望 "2026-03-02T12:34" 或带秒
@@ -42,6 +45,7 @@ function renderAnalysisStats(data) {
         cancelledOrdersEl.textContent = '-';
         totalTurnoverEl.textContent = '-';
         avgPriceEl.textContent = '-';
+        renderAnalysisCharts(null);
         return;
     }
 
@@ -51,7 +55,7 @@ function renderAnalysisStats(data) {
     totalTurnoverEl.textContent = data.totalTurnover ?? 0;
     avgPriceEl.textContent = data.avgPrice ?? 0;
 
-    // 渲染简单条形图
+    // 渲染简单条形图（成交 vs 撤单 占比）
     const barFilled = document.getElementById('bar-filled');
     const barCancelled = document.getElementById('bar-cancelled');
     const barsWrapper = document.getElementById('analysis-bars');
@@ -67,22 +71,155 @@ function renderAnalysisStats(data) {
             emptyTip.style.display = 'block';
             emptyTip.textContent = '当前时间区间内无成交或撤单数据。';
         }
+    } else {
+        const filledPercent = Math.round((filled / total) * 100);
+        const cancelledPercent = 100 - filledPercent;
+
+        barFilled.style.width = filledPercent + '%';
+        barCancelled.style.width = cancelledPercent + '%';
+
+        barFilled.textContent = filled > 0 ? `成交 ${filledPercent}%` : '';
+        barCancelled.textContent = cancelled > 0 ? `撤单 ${cancelledPercent}%` : '';
+
+        if (emptyTip) {
+            emptyTip.style.display = 'none';
+        }
+        barsWrapper.style.display = 'block';
+    }
+
+    // 使用后端返回的 dailyStats 渲染折线图、柱状图
+    renderAnalysisCharts(data);
+}
+
+function renderAnalysisCharts(data) {
+    const emptyTip = document.getElementById('analysis-chart-empty');
+    const ordersCanvas = document.getElementById('chart-orders-per-day');
+    const turnoverCanvas = document.getElementById('chart-turnover-per-day');
+
+    if (!ordersCanvas || !turnoverCanvas || typeof Chart === 'undefined') {
         return;
     }
 
-    const filledPercent = Math.round((filled / total) * 100);
-    const cancelledPercent = 100 - filledPercent;
+    if (!data || !Array.isArray(data.dailyStats) || data.dailyStats.length === 0) {
+        if (ordersPerDayChart) {
+            ordersPerDayChart.destroy();
+            ordersPerDayChart = null;
+        }
+        if (turnoverPerDayChart) {
+            turnoverPerDayChart.destroy();
+            turnoverPerDayChart = null;
+        }
+        if (emptyTip) {
+            emptyTip.style.display = 'block';
+            emptyTip.textContent = '当前时间区间内没有可绘制的时间序列数据。';
+        }
+        return;
+    }
 
-    barFilled.style.width = filledPercent + '%';
-    barCancelled.style.width = cancelledPercent + '%';
-
-    barFilled.textContent = filled > 0 ? `成交 ${filledPercent}%` : '';
-    barCancelled.textContent = cancelled > 0 ? `撤单 ${cancelledPercent}%` : '';
+    const labels = data.dailyStats.map(p => p.date);
+    const totalOrdersSeries = data.dailyStats.map(p => p.totalOrders ?? 0);
+    const filledOrdersSeries = data.dailyStats.map(p => p.filledOrders ?? 0);
+    const cancelledOrdersSeries = data.dailyStats.map(p => p.cancelledOrders ?? 0);
+    const turnoverSeries = data.dailyStats.map(p => Number(p.totalTurnover || 0));
 
     if (emptyTip) {
         emptyTip.style.display = 'none';
     }
-    barsWrapper.style.display = 'block';
+
+    if (ordersPerDayChart) {
+        ordersPerDayChart.destroy();
+    }
+    ordersPerDayChart = new Chart(ordersCanvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: '订单总数',
+                    data: totalOrdersSeries,
+                    backgroundColor: 'rgba(102, 126, 234, 0.8)'
+                },
+                {
+                    label: '成交订单数',
+                    data: filledOrdersSeries,
+                    backgroundColor: 'rgba(72, 187, 120, 0.7)'
+                },
+                {
+                    label: '撤单订单数',
+                    data: cancelledOrdersSeries,
+                    backgroundColor: 'rgba(245, 101, 101, 0.7)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: '日期'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '订单数'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
+
+    if (turnoverPerDayChart) {
+        turnoverPerDayChart.destroy();
+    }
+    turnoverPerDayChart = new Chart(turnoverCanvas.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: '每日成交金额',
+                    data: turnoverSeries,
+                    borderColor: 'rgba(72, 187, 120, 1)',
+                    backgroundColor: 'rgba(72, 187, 120, 0.2)',
+                    tension: 0.2,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: '日期'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '成交金额'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

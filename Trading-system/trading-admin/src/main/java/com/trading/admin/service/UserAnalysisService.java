@@ -9,8 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserAnalysisService {
@@ -38,6 +43,7 @@ public class UserAnalysisService {
 
         UserAnalysisDTO dto = new UserAnalysisDTO();
 
+        // 汇总统计
         long total = orders.size();
         long filledOrders = orders.stream()
                 .filter(o -> "FILLED".equals(o.getStatus()))
@@ -74,6 +80,62 @@ public class UserAnalysisService {
         dto.setTotalTurnover(turnover);
         dto.setAvgPrice(avgPrice);
 
+        // 按日期聚合，供前端画每日订单数 / 成交金额折线图、柱状图
+        Map<LocalDate, DailyAggregation> dailyMap = new LinkedHashMap<>();
+        for (OrderHistory order : orders) {
+            LocalDateTime createdAt = order.getCreatedAt();
+            if (createdAt == null) {
+                continue;
+            }
+            LocalDate day = createdAt.toLocalDate();
+            DailyAggregation agg = dailyMap.computeIfAbsent(day, d -> new DailyAggregation());
+
+            agg.totalOrders++;
+            if ("FILLED".equals(order.getStatus())) {
+                agg.filledOrders++;
+            }
+            if ("CANCELLED".equals(order.getStatus())) {
+                agg.cancelledOrders++;
+            }
+
+            Integer filledQty = order.getFilledQty();
+            if (filledQty != null && filledQty > 0) {
+                double price = order.getPrice() != null ? order.getPrice() : 0.0d;
+                BigDecimal amount = BigDecimal.valueOf(price)
+                        .multiply(BigDecimal.valueOf(filledQty));
+                agg.totalTurnover = agg.totalTurnover.add(amount);
+            }
+        }
+
+        List<UserAnalysisDTO.DailyStat> dailyStats = new ArrayList<>();
+        dailyMap.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .forEach(entry -> {
+                    LocalDate day = entry.getKey();
+                    DailyAggregation agg = entry.getValue();
+
+                    UserAnalysisDTO.DailyStat stat = new UserAnalysisDTO.DailyStat();
+                    stat.setDate(day.toString());
+                    stat.setTotalOrders(agg.totalOrders);
+                    stat.setFilledOrders(agg.filledOrders);
+                    stat.setCancelledOrders(agg.cancelledOrders);
+                    stat.setTotalTurnover(agg.totalTurnover);
+
+                    dailyStats.add(stat);
+                });
+
+        dto.setDailyStats(dailyStats);
+
         return dto;
+    }
+
+    /**
+     * 内部使用的每日聚合对象，用于构建 DTO 所需的 DailyStat 列表。
+     */
+    private static class DailyAggregation {
+        private long totalOrders = 0L;
+        private long filledOrders = 0L;
+        private long cancelledOrders = 0L;
+        private BigDecimal totalTurnover = BigDecimal.ZERO;
     }
 }

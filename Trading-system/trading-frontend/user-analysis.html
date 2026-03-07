@@ -85,6 +85,22 @@
                                 <div id="bar-cancelled" style="background:#f56565; height:100%; width:0%; text-align:center; color:#fff; font-size:12px; line-height:26px;"></div>
                             </div>
                         </div>
+                        <div style="margin-top:20px;">
+                            <div style="margin-bottom:8px; font-size: 14px; color:#4a5568;">
+                                每日订单数量（总数 / 成交 / 撤单）
+                            </div>
+                            <div style="position: relative; width: 100%; max-width: 100%; height: 260px;">
+                                <canvas id="chart-orders-per-day"></canvas>
+                            </div>
+                        </div>
+                        <div style="margin-top:24px;">
+                            <div style="margin-bottom:8px; font-size: 14px; color:#4a5568;">
+                                每日成交金额
+                            </div>
+                            <div style="position: relative; width: 100%; max-width: 100%; height: 260px;">
+                                <canvas id="chart-turnover-per-day"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -95,6 +111,7 @@
         </footer>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/user-analysis.js"></script>
