@@ -20,8 +20,10 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -46,6 +48,12 @@ public class ExchangeEngineHolder {
 
     /** 全局递增订单 ID（引擎侧 orderId） */
     private final AtomicLong orderIdGenerator = new AtomicLong(1L);
+
+    /** 动态 symbolId 生成器（从 2 开始，1 保留给默认） */
+    private final AtomicInteger symbolIdGenerator = new AtomicInteger(1);
+
+    /** 证券代码 -> 引擎 symbolId 的映射，key = "market:securityId" */
+    private final ConcurrentHashMap<String, Integer> symbolRegistry = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void start() {
@@ -151,6 +159,49 @@ public class ExchangeEngineHolder {
         } catch (Exception e) {
             log.error("Init balance failed", e);
             throw new IllegalStateException("Init balance failed", e);
+        }
+    }
+
+    /**
+     * 获取或动态注册证券对应的 symbolId。
+     * 不同的 market:securityId 组合会分配不同的 symbolId，
+     * 确保不同证券的订单簿相互隔离。
+     */
+    public int getOrCreateSymbolId(String market, String securityId) {
+        String key = market + ":" + securityId;
+        return symbolRegistry.computeIfAbsent(key, k -> {
+            int newSymbolId = symbolIdGenerator.incrementAndGet();
+            registerSymbolInEngine(newSymbolId);
+            log.info("Registered new symbol: {} -> symbolId={}", key, newSymbolId);
+            return newSymbolId;
+        });
+    }
+
+    /**
+     * 在引擎中注册一个新的 symbolId（与默认 symbol 使用相同参数）。
+     */
+    private void registerSymbolInEngine(int symbolId) {
+        CoreSymbolSpecification spec = CoreSymbolSpecification.builder()
+                .symbolId(symbolId)
+                .type(SymbolType.CURRENCY_EXCHANGE_PAIR)
+                .baseCurrency(1)
+                .quoteCurrency(2)
+                .baseScaleK(1L)
+                .quoteScaleK(10000L)
+                .takerFee(0L)
+                .makerFee(0L)
+                .marginBuy(0L)
+                .marginSell(0L)
+                .build();
+        try {
+            CommandResultCode code = api.submitBinaryDataAsync(new BatchAddSymbolsCommand(spec))
+                    .get(10, TimeUnit.SECONDS);
+            if (code != CommandResultCode.SUCCESS && code != CommandResultCode.ACCEPTED) {
+                log.warn("Register symbol {} result: {}", symbolId, code);
+            }
+        } catch (Exception e) {
+            log.error("Register symbol {} failed", symbolId, e);
+            throw new IllegalStateException("Register symbol failed: " + symbolId, e);
         }
     }
 

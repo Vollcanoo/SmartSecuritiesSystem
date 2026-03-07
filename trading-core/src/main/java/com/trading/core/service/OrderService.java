@@ -131,7 +131,7 @@ public class OrderService {
 
         ExchangeApi api = engineHolder.getApi();
         long orderId = engineHolder.nextOrderId();
-        int symbolId = ExchangeEngineHolder.DEFAULT_SYMBOL_ID;
+        int symbolId = engineHolder.getOrCreateSymbolId(req.getMarket(), req.getSecurityId());
         long uid = ExchangeEngineHolder.DEFAULT_UID;
 
         long price = toEnginePrice(req.getPrice());
@@ -254,7 +254,7 @@ public class OrderService {
             }
         }
         ExchangeApi api = engineHolder.getApi();
-        int symbolId = ExchangeEngineHolder.DEFAULT_SYMBOL_ID;
+        int symbolId = engineHolder.getOrCreateSymbolId(openOrder.getMarket(), openOrder.getSecurityId());
         long uid = ExchangeEngineHolder.DEFAULT_UID;
 
         ApiCancelOrder cmd = ApiCancelOrder.builder()
