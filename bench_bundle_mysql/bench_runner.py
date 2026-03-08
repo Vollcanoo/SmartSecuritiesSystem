@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-MySQL-backed business throughput and concurrency benchmark.
+MySQL 端到端吞吐压测脚本。
 
-What this script measures for each case:
-1) Request layer throughput/latency by sending concurrent POST /api/order.
-2) Business persistence throughput by sampling MySQL table trading_admin.t_order_history.
+每个压测用例包含两类指标：
+1) 请求层吞吐与延迟（并发 POST /api/order）
+2) 落库层吞吐（采样 trading_admin.t_order_history 行数）
 """
 
 from __future__ import annotations
@@ -584,7 +585,7 @@ def main() -> int:
         timeout_sec=max(1, int(args.mysql_timeout_ms / 1000)),
     )
 
-    # Fail fast on DB connectivity and table presence.
+    # 启动前先校验数据库连通性和表是否存在
     mysql_client.query_lines("SELECT 1;")
     mysql_client.query_lines("SELECT COUNT(*) FROM t_order_history LIMIT 1;")
 

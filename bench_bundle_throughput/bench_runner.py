@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Simple throughput benchmark for this trading system.
+交易系统吞吐压测脚本。
 
-Supports:
-- core HTTP endpoint: POST /api/order
-- gateway TCP endpoint: line-delimited JSON on port 9000
+支持两类目标：
+1) core HTTP 接口（POST /api/order）
+2) gateway TCP 接口（9000 端口，按行 JSON）
 """
 
 from __future__ import annotations
@@ -275,7 +276,7 @@ def run_http_case(
         except urllib.error.URLError:
             elapsed_ms = (time.perf_counter() - t0) * 1000.0
             return False, False, elapsed_ms, "url_error", None
-        except Exception as e:  # pragma: no cover - broad safety for benchmark tool
+        except Exception as e:  # 压测脚本兜底异常
             elapsed_ms = (time.perf_counter() - t0) * 1000.0
             return False, False, elapsed_ms, f"exc_{type(e).__name__}", None
 
@@ -388,7 +389,7 @@ def run_tcp_case(
                     sock.settimeout(timeout_sec)
 
                 req_obj = dict(base_payload)
-                # For new orders, set explicit unique clOrderId to avoid ambiguity in gateway tests.
+                # 新单补充唯一 clOrderId，避免网关压测时请求冲突
                 if "origClOrderId" not in req_obj and not req_obj.get("clOrderId"):
                     req_obj["clOrderId"] = f"GW{worker_id:03d}{req_idx:09d}"
 
@@ -434,7 +435,7 @@ def run_tcp_case(
                     except Exception:
                         pass
                 sock = None
-            except Exception as e:  # pragma: no cover - broad safety for benchmark tool
+            except Exception as e:  # 压测脚本兜底异常
                 err_key = f"exc_{type(e).__name__}"
                 if sock is not None:
                     try:
