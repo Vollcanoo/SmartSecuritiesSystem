@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.trading.core.risk.SelfTradeChecker;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.HashMap;
@@ -31,16 +33,18 @@ public class TradeEventProcessor {
     private final ExchangeEngineHolder engineHolder;
     private final OpenOrderStore openOrderStore;
     private final OrderEventSender orderEventSender;
+    private final SelfTradeChecker selfTradeChecker;
     /** 引擎订单ID -> 客户订单ID 的反向映射 */
     private final ConcurrentHashMap<Long, String> orderIdToClOrderId = new ConcurrentHashMap<>();
 
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Thread processorThread;
 
-    public TradeEventProcessor(ExchangeEngineHolder engineHolder, OpenOrderStore openOrderStore, OrderEventSender orderEventSender) {
+    public TradeEventProcessor(ExchangeEngineHolder engineHolder, OpenOrderStore openOrderStore, OrderEventSender orderEventSender, SelfTradeChecker selfTradeChecker) {
         this.engineHolder = engineHolder;
         this.openOrderStore = openOrderStore;
         this.orderEventSender = orderEventSender;
+        this.selfTradeChecker = selfTradeChecker;
     }
 
     /**
@@ -211,6 +215,11 @@ public class TradeEventProcessor {
         int orderQty = record.getOrderQty() != null ? record.getOrderQty() : 0;
 
         record.setFilledQty(newFilled);
+
+        // 通知风控模块扣减未成交敞口
+        if (filledQty > 0) {
+            selfTradeChecker.onTrade(clOrderId, filledQty);
+        }
 
         // 如果完全成交，从挂单列表中移除
         if (orderCompleted || (orderQty > 0 && newFilled >= orderQty)) {

@@ -111,7 +111,7 @@ public class OrderService {
         long orderId = engineHolder.nextOrderId();
         // 根据 securityId 动态获取对应的 symbolId，每只股票独立的订单簿
         int symbolId = engineHolder.getSymbolId(req.getSecurityId());
-        long uid = ExchangeEngineHolder.DEFAULT_UID;
+        long uid = engineHolder.getUidAndInit(req.getShareholderId());
 
         long price = toEnginePrice(req.getPrice());
         long size = req.getQty() != null ? req.getQty() : 0;
@@ -231,7 +231,7 @@ public class OrderService {
         ExchangeApi api = engineHolder.getApi();
         // 根据原订单的 securityId 获取对应的 symbolId
         int symbolId = engineHolder.getSymbolId(openOrder.getSecurityId());
-        long uid = ExchangeEngineHolder.DEFAULT_UID;
+        long uid = engineHolder.getUidAndInit(openOrder.getShareholderId());
 
         ApiCancelOrder cmd = ApiCancelOrder.builder()
                 .orderId(engineOrderId)

@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://localhost:3306/trading_admin?useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
     # 生产可用环境变量: password: ${DB_PASSWORD:}
-    password: ${DB_PASSWORD:}
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

@@ -97,4 +97,19 @@ public final class SelfTradeChecker {
         if (open == null) return;
         if (ok.isBuy) open.buyQty.addAndGet(-canceledQty); else open.sellQty.addAndGet(-canceledQty);
     }
+
+    /**
+     * 引擎发生部分或全部成交时调用：扣减该订单对应的未成交量敞口。
+     * @param clOrderId 客户订单ID
+     * @param filledQty 本次新增的成交量
+     */
+    public void onTrade(String clOrderId, long filledQty) {
+        if (filledQty <= 0 || clOrderId == null) return;
+        OrderKey ok = clOrderIdToKey.get(clOrderId);
+        if (ok == null) return;
+        String k = key(ok.shareholderId, ok.market, ok.securityId);
+        OpenQty open = keyToOpen.get(k);
+        if (open == null) return;
+        if (ok.isBuy) open.buyQty.addAndGet(-filledQty); else open.sellQty.addAndGet(-filledQty);
+    }
 }

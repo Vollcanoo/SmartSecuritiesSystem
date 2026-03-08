@@ -54,6 +54,8 @@ public class ExchangeEngineHolder {
     private final AtomicLong symbolIdCounter = new AtomicLong(1L);
     /** 已初始化的 symbolId 集合 */
     private final ConcurrentHashMap<Integer, Boolean> initializedSymbols = new ConcurrentHashMap<>();
+    /** 已初始化的用户 uid 集合 */
+    private final ConcurrentHashMap<Long, Boolean> initializedUsers = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void start() {
@@ -162,6 +164,54 @@ public class ExchangeEngineHolder {
         }
     }
 
+    /** 为指定用户注入测试资金（报价货币=2）与持仓（基础货币=1） */
+    public void initUserAndBalance(long uid) {
+        try {
+            OrderCommand result = api.submitCommandAsyncFullResponse(ApiAddUser.builder().uid(uid).build()).get(10, TimeUnit.SECONDS);
+            if (result.resultCode != CommandResultCode.SUCCESS && result.resultCode != CommandResultCode.USER_MGMT_USER_ALREADY_EXISTS) {
+                log.warn("Create user {} result: {}", uid, result.resultCode);
+            }
+        } catch (Exception e) {
+            log.error("Create user {} failed", uid, e);
+            throw new IllegalStateException("Create user failed", e);
+        }
+
+        final int quoteCurrency = 2;
+        final int baseCurrency = 1;
+        final long initialQuote = 1_000_000_000_000L;   // 资金，足够多笔买单
+        final long initialBase = 10_000_000L;           // 持仓（引擎单位 = 股×baseScaleK），足够多笔卖单
+        
+        // 使用时间戳作为事务ID保证唯一
+        long txQuote = System.nanoTime();
+        long txBase = txQuote + 1;
+
+        ApiAdjustUserBalance cmdQuote = ApiAdjustUserBalance.builder()
+                .uid(uid)
+                .currency(quoteCurrency)
+                .amount(initialQuote)
+                .transactionId(txQuote)
+                .build();
+        ApiAdjustUserBalance cmdBase = ApiAdjustUserBalance.builder()
+                .uid(uid)
+                .currency(baseCurrency)
+                .amount(initialBase)
+                .transactionId(txBase)
+                .build();
+        try {
+            OrderCommand r1 = api.submitCommandAsyncFullResponse(cmdQuote).get(10, TimeUnit.SECONDS);
+            if (r1.resultCode != CommandResultCode.SUCCESS && r1.resultCode != CommandResultCode.ACCEPTED) {
+                log.warn("Init balance quote result for uid {}: {}", uid, r1.resultCode);
+            }
+            OrderCommand r2 = api.submitCommandAsyncFullResponse(cmdBase).get(10, TimeUnit.SECONDS);
+            if (r2.resultCode != CommandResultCode.SUCCESS && r2.resultCode != CommandResultCode.ACCEPTED) {
+                log.warn("Init balance base result for uid {}: {}", uid, r2.resultCode);
+            }
+        } catch (Exception e) {
+            log.error("Init balance failed for uid {}", uid, e);
+            throw new IllegalStateException("Init balance failed", e);
+        }
+    }
+
     private void onResult(OrderCommand cmd, long sequence) {
         if (!resultQueue.offer(cmd.copy())) {
             log.warn("Result queue full, drop result for orderId={}", cmd.orderId);
@@ -178,6 +228,28 @@ public class ExchangeEngineHolder {
 
     public long nextOrderId() {
         return orderIdGenerator.incrementAndGet();
+    }
+
+    /**
+     * 根据 shareholderId 解析出 uid，如果该用户未在引擎中初始化，则自动初始化并分配测试资金。
+     * @param shareholderId 如 "SH00010001"
+     * @return 解析后的 uid
+     */
+    public long getUidAndInit(String shareholderId) {
+        long uid;
+        try {
+            uid = Long.parseLong(shareholderId.toUpperCase().replace("SH", ""));
+        } catch (Exception e) {
+            log.warn("Invalid shareholderId format: {}, fallback to DEFAULT_UID", shareholderId);
+            return DEFAULT_UID;
+        }
+
+        // lazy initialize
+        if (initializedUsers.putIfAbsent(uid, true) == null) {
+            log.info("Lazy initializing engine user and balance for uid={}", uid);
+            initUserAndBalance(uid);
+        }
+        return uid;
     }
 
     /**
