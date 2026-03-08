@@ -94,13 +94,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <!-- 本地仓库配置：指向 exchange-core 的安装位置 -->
-    <repositories>
-        <repository>
-            <id>local-exchange-core</id>
-            <name>Local Exchange Core</name>
-            <url>file://D:/mvn/apache-maven-3.9.12-bin/apache-maven-3.9.12/repository</url>
-        </repository>
-    </repositories>
 </project>
