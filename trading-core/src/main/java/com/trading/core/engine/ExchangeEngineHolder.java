@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -46,6 +47,13 @@ public class ExchangeEngineHolder {
 
     /** 全局递增订单 ID（引擎侧 orderId） */
     private final AtomicLong orderIdGenerator = new AtomicLong(1L);
+
+    /** securityId（股票代码，如 600030）到 symbolId（引擎内部品种ID）的映射 */
+    private final ConcurrentHashMap<String, Integer> securityIdToSymbolId = new ConcurrentHashMap<>();
+    /** symbolId 计数器，从 1 开始递增 */
+    private final AtomicLong symbolIdCounter = new AtomicLong(1L);
+    /** 已初始化的 symbolId 集合 */
+    private final ConcurrentHashMap<Integer, Boolean> initializedSymbols = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void start() {
@@ -170,5 +178,81 @@ public class ExchangeEngineHolder {
 
     public long nextOrderId() {
         return orderIdGenerator.incrementAndGet();
+    }
+
+    /**
+     * 根据 securityId（股票代码）获取对应的 symbolId。
+     * 如果该股票尚未初始化，则自动创建新的引擎品种，并等待初始化完成。
+     * 这样每只股票都有独立的订单簿，避免跨股票撮合。
+     *
+     * @param securityId 股票代码，如 "600030"
+     * @return 对应的引擎 symbolId
+     */
+    public int getSymbolId(String securityId) {
+        // 先检查映射表中是否已有该股票对应的 symbolId
+        Integer symbolId = securityIdToSymbolId.get(securityId);
+        if (symbolId != null) {
+            // 检查是否已初始化完成
+            if (initializedSymbols.containsKey(symbolId)) {
+                return symbolId;
+            }
+            // 如果正在初始化中，等待一下
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return symbolId;
+        }
+
+        // 映射表中没有，则分配新的 symbolId 并初始化品种
+        int newSymbolId = (int) symbolIdCounter.incrementAndGet();
+        securityIdToSymbolId.put(securityId, newSymbolId);
+        
+        // 同步等待品种初始化完成
+        initializeSymbolAndWait(newSymbolId);
+
+        log.info("Registered new security {} -> symbolId {}", securityId, newSymbolId);
+        return newSymbolId;
+    }
+
+    /**
+     * 初始化新的交易品种（Symbol），并等待初始化完成
+     * 注意：所有品种共用同一个资金池（baseCurrency=1, quoteCurrency=2），
+     * 通过不同的 symbolId 来隔离订单簿，避免跨股票撮合。
+     */
+    private void initializeSymbolAndWait(int symbolId) {
+        if (initializedSymbols.containsKey(symbolId)) {
+            return;
+        }
+
+        // 所有品种共用 baseCurrency=1 和 quoteCurrency=2
+        // symbolId 只用于隔离不同的订单簿
+        CoreSymbolSpecification spec = CoreSymbolSpecification.builder()
+                .symbolId(symbolId)
+                .type(SymbolType.CURRENCY_EXCHANGE_PAIR)
+                .baseCurrency(1)       // 统一使用 currency=1 作为基础货币
+                .quoteCurrency(2)     // 统一使用 currency=2 作为报价货币
+                .baseScaleK(1L)
+                .quoteScaleK(10000L)
+                .takerFee(0L)
+                .makerFee(0L)
+                .marginBuy(0L)
+                .marginSell(0L)
+                .build();
+
+        try {
+            // 等待异步初始化完成
+            CommandResultCode code = api.submitBinaryDataAsync(new BatchAddSymbolsCommand(spec)).get(30, TimeUnit.SECONDS);
+            if (code != CommandResultCode.SUCCESS && code != CommandResultCode.ACCEPTED) {
+                log.warn("Initialize symbol {} result: {}", symbolId, code);
+            } else {
+                initializedSymbols.put(symbolId, true);
+                log.info("Successfully initialized symbolId={} for trading", symbolId);
+            }
+        } catch (Exception e) {
+            log.error("Initialize symbol {} failed", symbolId, e);
+            throw new IllegalStateException("Initialize symbol failed", e);
+        }
     }
 }
