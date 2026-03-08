@@ -9,9 +9,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderHistoryService {
@@ -29,76 +32,140 @@ public class OrderHistoryService {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OrderHistoryService.class);
 
     private final OrderHistoryRepository repository;
+    
+    // Batch processing queue
+    private final BlockingQueue<OrderEventDto> eventQueue = new LinkedBlockingQueue<>(50000);
+    private final ExecutorService batchExecutor = Executors.newSingleThreadExecutor();
+    private volatile boolean isRunning = true;
 
     public OrderHistoryService(OrderHistoryRepository repository) {
         this.repository = repository;
     }
 
+    @PostConstruct
+    public void init() {
+        batchExecutor.submit(this::processBatchLoop);
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        isRunning = false;
+        batchExecutor.shutdown();
+        try {
+            if (!batchExecutor.awaitTermination(3, TimeUnit.SECONDS)) {
+                batchExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            batchExecutor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
     /**
-     * 处理 Core 推送的订单事件，落库并更新状态。
+     * 将订单事件放入队列，异步批量处理
      */
-    @Transactional
     public void processEvent(OrderEventDto event) {
         if (event == null || event.getEventType() == null || event.getClOrderId() == null) return;
-        String type = event.getEventType().toUpperCase();
+        if (!eventQueue.offer(event)) {
+            log.warn("Event queue is full, dropping event for clOrderId={}", event.getClOrderId());
+        }
+    }
+
+    private void processBatchLoop() {
+        while (isRunning || !eventQueue.isEmpty()) {
+            try {
+                List<OrderEventDto> batch = new ArrayList<>();
+                OrderEventDto first = eventQueue.poll(1, TimeUnit.SECONDS);
+                if (first != null) {
+                    batch.add(first);
+                    eventQueue.drainTo(batch, 999); // max 1000 per batch
+                    saveBatch(batch);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            } catch (Exception e) {
+                log.error("Error processing event batch", e);
+            }
+        }
+    }
+
+    @Transactional
+    protected void saveBatch(List<OrderEventDto> batch) {
+        if (batch.isEmpty()) return;
+        
+        // 分组处理同一个 clOrderId 的多个事件，只保留最终状态。这样可以避免同批次内重复查询和插入冲突
+        Map<String, OrderEventDto> mergedEvents = new LinkedHashMap<>();
+        for (OrderEventDto e : batch) {
+            mergedEvents.put(e.getClOrderId(), e); // 后面到达的覆盖前面的，这里做了简化，假设只有状态和数量更新
+        }
+        
+        List<String> clOrderIds = new ArrayList<>(mergedEvents.keySet());
+        List<OrderHistory> existingRecordsList = repository.findByClOrderIdIn(clOrderIds);
+
+        Map<String, OrderHistory> existingMap = new HashMap<>();
+        for (OrderHistory o : existingRecordsList) {
+            existingMap.put(o.getClOrderId(), o);
+        }
+
+        List<OrderHistory> toSave = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
 
-        if (EVENT_PLACED.equals(type) || EVENT_PARTIALLY_FILLED.equals(type) || EVENT_FILLED.equals(type)) {
-            Optional<OrderHistory> existing = repository.findByClOrderId(event.getClOrderId());
-            int filled = event.getFilledQty() != null ? event.getFilledQty() : 0;
+        for (OrderEventDto event : mergedEvents.values()) {
+            String type = event.getEventType().toUpperCase();
             
-            if (existing.isPresent()) {
-                OrderHistory o = existing.get();
-                // 如果事件中没有提供 orderQty，使用现有记录中的值
-                int orderQty = event.getOrderQty() != null ? event.getOrderQty() : (o.getOrderQty() != null ? o.getOrderQty() : 0);
-                // 更新其他字段（如果事件中提供了）
-                if (event.getShareholderId() != null) o.setShareholderId(event.getShareholderId());
-                if (event.getMarket() != null) o.setMarket(event.getMarket());
-                if (event.getSecurityId() != null) o.setSecurityId(event.getSecurityId());
-                if (event.getSide() != null) o.setSide(event.getSide());
-                if (event.getPrice() != null) o.setPrice(event.getPrice());
-                if (event.getOrderQty() != null) o.setOrderQty(event.getOrderQty());
+            if (EVENT_PLACED.equals(type) || EVENT_PARTIALLY_FILLED.equals(type) || EVENT_FILLED.equals(type)) {
+                int filled = event.getFilledQty() != null ? event.getFilledQty() : 0;
+                OrderHistory o = existingMap.get(event.getClOrderId());
                 
-                o.setFilledQty(filled);
-                // 计算状态：如果 filled >= orderQty，则为 FILLED；如果 filled > 0，则为 PARTIALLY_FILLED；否则为 LIVE
-                String status = (orderQty > 0 && filled >= orderQty) ? STATUS_FILLED : (filled > 0 ? STATUS_PARTIALLY_FILLED : STATUS_LIVE);
-                o.setStatus(status);
-                o.setUpdatedAt(now);
-                repository.save(o);
-                log.debug("Updated order history: clOrderId={}, filled={}/{}, status={}", event.getClOrderId(), filled, orderQty, status);
-            } else {
-                // 新订单，创建记录
-                int orderQty = event.getOrderQty() != null ? event.getOrderQty() : 0;
-                String status = (orderQty > 0 && filled >= orderQty) ? STATUS_FILLED : (filled > 0 ? STATUS_PARTIALLY_FILLED : STATUS_LIVE);
-                
-                OrderHistory o = new OrderHistory();
-                o.setClOrderId(event.getClOrderId());
-                o.setEngineOrderId(event.getEngineOrderId());
-                o.setShareholderId(event.getShareholderId());
-                o.setMarket(event.getMarket());
-                o.setSecurityId(event.getSecurityId());
-                o.setSide(event.getSide());
-                o.setPrice(event.getPrice());
-                o.setOrderQty(orderQty);
-                o.setFilledQty(filled);
-                o.setCanceledQty(0);
-                o.setStatus(status);
-                o.setCreatedAt(now);
-                o.setUpdatedAt(now);
-                repository.save(o);
-                log.debug("Created new order history: clOrderId={}, filled={}/{}, status={}", event.getClOrderId(), filled, orderQty, status);
+                if (o != null) {
+                    int orderQty = event.getOrderQty() != null ? event.getOrderQty() : (o.getOrderQty() != null ? o.getOrderQty() : 0);
+                    if (event.getShareholderId() != null) o.setShareholderId(event.getShareholderId());
+                    if (event.getMarket() != null) o.setMarket(event.getMarket());
+                    if (event.getSecurityId() != null) o.setSecurityId(event.getSecurityId());
+                    if (event.getSide() != null) o.setSide(event.getSide());
+                    if (event.getPrice() != null) o.setPrice(event.getPrice());
+                    if (event.getOrderQty() != null) o.setOrderQty(event.getOrderQty());
+                    
+                    o.setFilledQty(filled);
+                    String status = (orderQty > 0 && filled >= orderQty) ? STATUS_FILLED : (filled > 0 ? STATUS_PARTIALLY_FILLED : STATUS_LIVE);
+                    o.setStatus(status);
+                    o.setUpdatedAt(now);
+                    toSave.add(o);
+                } else {
+                    int orderQty = event.getOrderQty() != null ? event.getOrderQty() : 0;
+                    String status = (orderQty > 0 && filled >= orderQty) ? STATUS_FILLED : (filled > 0 ? STATUS_PARTIALLY_FILLED : STATUS_LIVE);
+                    
+                    o = new OrderHistory();
+                    o.setClOrderId(event.getClOrderId());
+                    o.setEngineOrderId(event.getEngineOrderId());
+                    o.setShareholderId(event.getShareholderId());
+                    o.setMarket(event.getMarket());
+                    o.setSecurityId(event.getSecurityId());
+                    o.setSide(event.getSide());
+                    o.setPrice(event.getPrice());
+                    o.setOrderQty(orderQty);
+                    o.setFilledQty(filled);
+                    o.setCanceledQty(0);
+                    o.setStatus(status);
+                    o.setCreatedAt(now);
+                    o.setUpdatedAt(now);
+                    toSave.add(o);
+                }
+            } else if (EVENT_CANCELLED.equals(type)) {
+                OrderHistory o = existingMap.get(event.getClOrderId());
+                if (o != null) {
+                    o.setStatus(STATUS_CANCELLED);
+                    o.setCanceledQty(event.getCanceledQty() != null ? event.getCanceledQty() : 0);
+                    o.setUpdatedAt(now);
+                    toSave.add(o);
+                }
             }
-        } else if (EVENT_CANCELLED.equals(type)) {
-            Optional<OrderHistory> existing = repository.findByClOrderId(event.getClOrderId());
-            if (existing.isPresent()) {
-                OrderHistory o = existing.get();
-                o.setStatus(STATUS_CANCELLED);
-                o.setCanceledQty(event.getCanceledQty() != null ? event.getCanceledQty() : 0);
-                o.setUpdatedAt(now);
-                repository.save(o);
-            } else {
-                log.info("Order event CANCELLED but no order in DB: clOrderId={}", event.getClOrderId());
-            }
+        }
+        
+        if (!toSave.isEmpty()) {
+            repository.saveAll(toSave);
+            log.debug("Batch saved {} order history records", toSave.size());
         }
     }
 
@@ -118,9 +185,6 @@ public class OrderHistoryService {
             : repository.findByShareholderIdOrderByCreatedAtDesc(shareholderId, pageable);
     }
 
-    /**
-     * 按 id 删除一条历史订单。
-     */
     @Transactional
     public boolean deleteById(Long id) {
         if (id == null) return false;
@@ -130,9 +194,6 @@ public class OrderHistoryService {
         return true;
     }
 
-    /**
-     * 删除全部历史订单。
-     */
     @Transactional
     public long deleteAll() {
         long count = repository.count();

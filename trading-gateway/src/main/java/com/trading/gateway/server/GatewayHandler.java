@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 解析一行 JSON：含 origClOrderId 则按撤单转发，否则按下单转发；将 Core 返回的 JSON 写回客户端。
@@ -30,10 +32,13 @@ public class GatewayHandler extends SimpleChannelInboundHandler<String> {
 
     private final CoreClient coreClient;
     private final ObjectMapper objectMapper;
+    private final ExecutorService workerPool;
 
     public GatewayHandler(CoreClient coreClient, ObjectMapper objectMapper) {
         this.coreClient = coreClient;
         this.objectMapper = objectMapper;
+        // Use a dedicated thread pool for blocking HTTP calls to Core, so Netty I/O threads aren't blocked.
+        this.workerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
     }
 
     @Override
@@ -42,26 +47,29 @@ public class GatewayHandler extends SimpleChannelInboundHandler<String> {
             return;
         }
         String line = msg.trim();
-        try {
-            JsonNode root = objectMapper.readTree(line);
-            String response;
-            if (root.has("origClOrderId")) {
-                CancelRequest req = objectMapper.treeToValue(root, CancelRequest.class);
-                Object result = coreClient.cancelOrder(req);
-                response = result instanceof String ? (String) result : objectMapper.writeValueAsString(result);
-            } else {
-                OrderRequest req = objectMapper.treeToValue(root, OrderRequest.class);
-                Object result = coreClient.placeOrder(req);
-                response = result instanceof String ? (String) result : objectMapper.writeValueAsString(result);
+        
+        workerPool.execute(() -> {
+            try {
+                JsonNode root = objectMapper.readTree(line);
+                String response;
+                if (root.has("origClOrderId")) {
+                    CancelRequest req = objectMapper.treeToValue(root, CancelRequest.class);
+                    Object result = coreClient.cancelOrder(req);
+                    response = result instanceof String ? (String) result : objectMapper.writeValueAsString(result);
+                } else {
+                    OrderRequest req = objectMapper.treeToValue(root, OrderRequest.class);
+                    Object result = coreClient.placeOrder(req);
+                    response = result instanceof String ? (String) result : objectMapper.writeValueAsString(result);
+                }
+                ctx.writeAndFlush(response + "\n");
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                log.warn("Gateway invalid JSON: {}", line);
+                writeError(ctx, ERROR_INVALID_JSON);
+            } catch (Exception e) {
+                log.warn("Gateway handler error", e);
+                writeError(ctx, ERROR_BAD_REQUEST);
             }
-            ctx.writeAndFlush(response + "\n");
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            log.warn("Gateway invalid JSON: {}", line);
-            writeError(ctx, ERROR_INVALID_JSON);
-        } catch (Exception e) {
-            log.warn("Gateway handler error", e);
-            writeError(ctx, ERROR_BAD_REQUEST);
-        }
+        });
     }
 
     @Override

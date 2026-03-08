@@ -21,6 +21,8 @@ public interface OrderHistoryRepository extends JpaRepository<OrderHistory, Long
 
     Optional<OrderHistory> findByClOrderId(String clOrderId);
 
+    List<OrderHistory> findByClOrderIdIn(List<String> clOrderIds);
+
     @Query(value = "SELECT COUNT(*) FROM t_order_history", nativeQuery = true)
     long countAllOrders();
 
