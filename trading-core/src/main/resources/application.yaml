@@ -10,6 +10,12 @@ trading:
   admin:
     base-url: ${ADMIN_BASE_URL:http://localhost:8080}
     internal-token: ${INTERNAL_TOKEN:}
+  core:
+    market-validation:
+      # INSIDE：仅当买卖盘口都有时，要求订单价在 [bid,ask] 内；单边有挂单也可自由下单，不拒单
+      # EXACT：买价必须=ask、卖价必须=bid，否则拒单（易出现「不能低于行情价」）
+      mode: INSIDE
+      required: false   # true = 无行情直接拒单；false = 无行情时跳过行情校验
 
 management:
   endpoints:

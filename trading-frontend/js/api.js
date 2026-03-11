@@ -163,6 +163,15 @@ const CoreAPI = {
         return await apiRequest(`${CONFIG.CORE_BASE_URL}/api/orders?shareholderId=${shareholderId}`);
     },
 
+    // 查询单只股票最新行情
+    async getMarketData(market, securityId) {
+        const params = new URLSearchParams();
+        if (market) params.append('market', market);
+        if (securityId) params.append('securityId', securityId);
+        const url = `${CONFIG.CORE_BASE_URL}/api/market-data?${params.toString()}`;
+        return await apiRequest(url);
+    },
+
     // 健康检查
     async healthCheck() {
         try {

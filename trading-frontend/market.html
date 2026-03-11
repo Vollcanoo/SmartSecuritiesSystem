@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行情查看与推送 - 模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 模拟股票交易对敲撮合系统</h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易下单</a>
+                <a href="orders.html" class="nav-link">订单历史</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+                <a href="market.html" class="nav-link active">行情</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="market">
+                <h2>行情查看与推送</h2>
+
+                <div class="card">
+                    <h3>查询最新行情</h3>
+                    <form id="market-query-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mq-market">市场:</label>
+                                <select id="mq-market" name="market" required>
+                                    <option value="">请选择</option>
+                                    <option value="XSHG">XSHG - 上交所</option>
+                                    <option value="XSHE">XSHE - 深交所</option>
+                                    <option value="BJSE">BJSE - 北交所</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="mq-securityId">股票代码:</label>
+                                <input type="text" id="mq-securityId" name="securityId" required maxlength="6" placeholder="如: 600030">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">查询行情</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="market-query-result" class="result-message"></div>
+                    <div id="market-latest-box" class="table-container" style="display:none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>市场</th>
+                                    <th>股票代码</th>
+                                    <th>买价 (bid)</th>
+                                    <th>卖价 (ask)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="market-latest-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/market.js"></script>
+</body>
+</html>
+

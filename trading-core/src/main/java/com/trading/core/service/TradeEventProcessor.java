@@ -40,7 +40,10 @@ public class TradeEventProcessor {
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Thread processorThread;
 
-    public TradeEventProcessor(ExchangeEngineHolder engineHolder, OpenOrderStore openOrderStore, OrderEventSender orderEventSender, SelfTradeChecker selfTradeChecker) {
+    public TradeEventProcessor(ExchangeEngineHolder engineHolder,
+                               OpenOrderStore openOrderStore,
+                               OrderEventSender orderEventSender,
+                               SelfTradeChecker selfTradeChecker) {
         this.engineHolder = engineHolder;
         this.openOrderStore = openOrderStore;
         this.orderEventSender = orderEventSender;
@@ -286,5 +289,6 @@ public class TradeEventProcessor {
         event.put("filledQty", filledQty);
         event.put("canceledQty", null);
         orderEventSender.sendEvent(event);
+
     }
 }

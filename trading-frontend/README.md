@@ -13,6 +13,7 @@ trading-frontend/
 ├── trading.html        # 交易下单页面
 ├── orders.html         # 订单历史查询页面（含删除单条/删除全部）
 ├── open-orders.html    # 当前挂单查询页面
+├── market.html         # 行情查看与推送页面
 ├── start-server.sh     # 启动脚本（Python HTTP 服务器）
 ├── css/
 │   └── style.css      # 样式文件
@@ -23,7 +24,8 @@ trading-frontend/
 │   ├── users.js       # 用户管理逻辑
 │   ├── trading.js     # 交易下单逻辑
 │   ├── orders.js      # 订单历史逻辑（含删除）
-│   └── open-orders.js # 挂单查询逻辑
+│   ├── open-orders.js # 挂单查询逻辑
+│   └── market.js      # 行情查看与推送逻辑
 ├── README.md          # 本文档
 └── TROUBLESHOOTING.md  # 常见问题排查
 ```
@@ -153,6 +155,13 @@ http-server -p 8000
 - 列表展示：订单编号、股东号、市场、股票、方向、价格、订单数量、已成交、剩余数量等
 
 成交或撤单后，对应订单会从挂单列表移除（由 Core 的 TradeEventProcessor 与 OpenOrderStore 维护）。
+
+### 4.6 行情查看（market.html）
+
+- 填写 **市场 (market)**：XSHG / XSHE / BJSE  
+- 填写 **股票代码 (securityId)**：如 600030  
+- 点击「查询行情」后，会调用 Core 的 `/api/market-data` 接口，展示该股票的最新买价 (bidPrice) 和卖价 (askPrice)。  
+- 行情数据由 Core 模块根据成交事件自动更新，无需在前端手动推送快照。
 
 ---
 

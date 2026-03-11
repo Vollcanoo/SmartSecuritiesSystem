@@ -5,6 +5,7 @@ import com.trading.common.model.request.OrderRequest;
 import com.trading.common.model.response.*;
 import com.trading.core.client.OrderEventSender;
 import com.trading.core.engine.ExchangeEngineHolder;
+import com.trading.core.market.MarketPriceValidator;
 import com.trading.core.model.OpenOrderRecord;
 import com.trading.core.risk.CancelValidation;
 import com.trading.core.risk.OrderValidation;
@@ -49,18 +50,26 @@ public class OrderService {
     private final OrderEventSender orderEventSender;
     private final UserValidator userValidator;
     private final TradeEventProcessor tradeEventProcessor;
+    private final MarketPriceValidator marketPriceValidator;
     /** 客户委托编号 -> 引擎订单 ID，用于撤单时查找 */
     private final ConcurrentHashMap<String, Long> clOrderIdToOrderId = new ConcurrentHashMap<>();
     /** 订单号生成器：格式 ORD + 时间戳 + 4位随机数 */
     private final AtomicLong orderSequence = new AtomicLong(1L);
 
-    public OrderService(ExchangeEngineHolder engineHolder, SelfTradeChecker selfTradeChecker, OpenOrderStore openOrderStore, OrderEventSender orderEventSender, UserValidator userValidator, TradeEventProcessor tradeEventProcessor) {
+    public OrderService(ExchangeEngineHolder engineHolder,
+                        SelfTradeChecker selfTradeChecker,
+                        OpenOrderStore openOrderStore,
+                        OrderEventSender orderEventSender,
+                        UserValidator userValidator,
+                        TradeEventProcessor tradeEventProcessor,
+                        MarketPriceValidator marketPriceValidator) {
         this.engineHolder = engineHolder;
         this.selfTradeChecker = selfTradeChecker;
         this.openOrderStore = openOrderStore;
         this.orderEventSender = orderEventSender;
         this.userValidator = userValidator;
         this.tradeEventProcessor = tradeEventProcessor;
+        this.marketPriceValidator = marketPriceValidator;
     }
 
     /**
@@ -103,6 +112,11 @@ public class OrderService {
         if (shareholderReject != null) {
             log.info("requestId={} clOrderId={} placeOrder shareholderReject code={}", requestId, req != null ? req.getClOrderId() : null, shareholderReject.getRejectCode());
             return shareholderReject;
+        }
+        OrderRejectResponse marketReject = marketPriceValidator.validate(req);
+        if (marketReject != null) {
+            log.info("requestId={} clOrderId={} placeOrder marketReject code={}", requestId, req.getClOrderId(), marketReject.getRejectCode());
+            return marketReject;
         }
         OrderRejectResponse selfTradeReject = selfTradeChecker.checkAndRejectIfSelfTrade(req);
         if (selfTradeReject != null) return selfTradeReject;
@@ -308,7 +322,6 @@ public class OrderService {
         ack.setQty(req.getQty());
         ack.setPrice(req.getPrice());
         ack.setShareholderId(req.getShareholderId());
-        ack.setOrderId(Long.valueOf(orderId));
         return ack;
     }
 
