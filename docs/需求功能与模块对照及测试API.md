@@ -103,10 +103,15 @@ curl -s -X POST http://localhost:8081/api/order \
 
 | 需求描述 | 实现模块 | 实现位置与说明 |
 |----------|----------|----------------|
-| 考虑行情信息：能读取解析输入的行情信息 | **未实现** | 当前无行情接入模块。 |
-| 在撮合时考虑行情信息：撮合时需要保证买价、卖价和对手方价格保持一致 | **未实现** | 撮合完全由 exchange-core 完成，未接入行情。 |
+| 考虑行情信息：能读取解析输入的行情信息 | **trading-core** | 行情由盘口自动计算：`OpenOrderStore.recalcTopOfBookFor` 按挂单计算买一/卖一写入 `MarketDataStore`；可选 `POST /internal/market-data/snapshot` 批量写入。查询：`GET /api/market-data`。 |
+| 在撮合时考虑行情信息：撮合时需要保证买价、卖价和对手方价格保持一致 | **trading-core** | `MarketPriceValidator` 在下单前校验价格（EXACT：买=ask/卖=bid；INSIDE：买≤ask、卖≥bid，默认 INSIDE）。配置：`trading.core.market-validation.mode`、`required`。 |
 
-**测试 API**：无（功能未实现）。
+**测试 API（行情查询）：**
+
+```bash
+# 查询某标的最新盘口（买一/卖一）
+curl -s "http://localhost:8081/api/market-data?market=XSHG&securityId=600030"
+```
 
 ---
 

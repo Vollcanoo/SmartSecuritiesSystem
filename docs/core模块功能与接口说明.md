@@ -27,6 +27,7 @@
 | 下单 | POST | `/api/order` | Body: OrderRequest，返回 OrderAckResponse 或 OrderRejectResponse |
 | 撤单 | POST | `/api/cancel` | Body: CancelRequest，返回 CancelAckResponse 或 CancelRejectResponse |
 | 查询挂单 | GET | `/api/orders?shareholderId=xxx` | 某股东号下当前未撤单订单列表 |
+| 行情查询 | GET | `/api/market-data?market=xxx&securityId=xxx` | 某标的最新盘口（买一 bidPrice、卖一 askPrice），由挂单计算 |
 | 健康检查 | GET | `/actuator/health` | Spring Actuator |
 
 ---
@@ -40,9 +41,10 @@
 1. **订单号**：若请求中 clOrderId 为空，则 `OrderService` 调用 `generateOrderId()` 生成（ORD+10 位秒级时间戳+4 位序号），并回填到请求中。
 2. **基本校验**：`OrderValidation.validate(OrderRequest)` 校验非空、market、securityId、side、qty>0、price>0、shareholderId 非空且长度；clOrderId 若提供则校验长度，可不提供。
 3. **股东号校验**：`UserValidator.validateShareholder(req)` 通过 HTTP 调用 Admin 的按股东号查询接口，若返回 404 或 4xx 则返回 OrderRejectResponse（如 1009），不进入引擎。
-4. **对敲风控**：`SelfTradeChecker.checkAndRejectIfSelfTrade(req)` 检查同股东号+同市场+同证券下是否已有反向未成交挂单；若有则返回 rejectCode=1002，不进入引擎。
-5. **引擎下单**：生成引擎 orderId，将价格×10000 转为引擎精度，构造 `ApiPlaceOrder`（GTC、BID/ASK），调用 `api.submitCommandAsyncFullResponse(cmd)` 同步等待结果。
-6. **结果处理**：成功则维护 `clOrderIdToOrderId`、**向 TradeEventProcessor 注册 orderId→clOrderId 映射**、更新 SelfTradeChecker、写入 OpenOrderStore（若立即完全成交则移除挂单并发送 FILLED）、向 Admin 发送 PLACED/FILLED 事件、返回 `OrderAckResponse`（含 clOrderId）；失败则返回 `OrderRejectResponse`。
+4. **行情校验**：`MarketPriceValidator.validate(req)` 校验订单价格是否在盘口范围内（EXACT：买价=ask、卖价=bid；INSIDE：买价≤ask、卖价≥bid，单边无挂单时可跳过）。配置 `trading.core.market-validation.mode`、`required`。
+5. **对敲风控**：`SelfTradeChecker.checkAndRejectIfSelfTrade(req)` 检查同股东号+同市场+同证券下是否已有反向未成交挂单；若有则返回 rejectCode=1002，不进入引擎。
+6. **引擎下单**：生成引擎 orderId，将价格×10000 转为引擎精度，构造 `ApiPlaceOrder`（GTC、BID/ASK），调用 `api.submitCommandAsyncFullResponse(cmd)` 同步等待结果。
+7. **结果处理**：成功则维护 `clOrderIdToOrderId`、**向 TradeEventProcessor 注册 orderId→clOrderId 映射**、更新 SelfTradeChecker、写入 OpenOrderStore（若立即完全成交则移除挂单并发送 FILLED；挂单变化会触发盘口重算并更新 MarketDataStore）、向 Admin 发送 PLACED/FILLED 事件、返回 `OrderAckResponse`（含 clOrderId）；失败则返回 `OrderRejectResponse`。
 
 #### 函数调用过程
 
@@ -51,6 +53,8 @@
 2. OrderController.placeOrder(request) → orderService.placeOrder(request)
 3. OrderService.placeOrder(req)
    ├─ OrderValidation.validate(req) → 若非 null，return 该 OrderRejectResponse
+   ├─ UserValidator.validateShareholder(req) → 若非 null，return 该 OrderRejectResponse
+   ├─ MarketPriceValidator.validate(req) → 若非 null，return 该 OrderRejectResponse（价格超出行情）
    ├─ SelfTradeChecker.checkAndRejectIfSelfTrade(req) → 若非 null，return 该 OrderRejectResponse（对敲）
    ├─ engineHolder.getApi(); engineHolder.nextOrderId()
    ├─ 价格/数量/方向换算 → ApiPlaceOrder.builder()...build()
@@ -117,7 +121,17 @@
 
 ---
 
-### 3.5 校验与风控组件说明
+### 3.5 行情查询与盘口
+
+- **功能**：提供某标的的最新盘口（买一 bidPrice、卖一 askPrice），供前端或下游查询；下单前可根据盘口做价格校验（见 MarketPriceValidator）。
+- **数据来源**：行情由**盘口**计算，不依赖外部推送。`OpenOrderStore` 在挂单**新增**（add）或**移除**（remove）时，对对应 `(market, securityId)` 调用 `recalcTopOfBookFor`：遍历当前该标的的所有未成交挂单，取最高买价作为 bidPrice、最低卖价作为 askPrice，写入 `MarketDataStore`；若无买/卖挂单则对应价格为 null。
+- **接口**：`GET /api/market-data?market=XSHG&securityId=600030` 返回 `MarketData`（market、securityId、bidPrice、askPrice）。Controller 返回副本，避免并发修改。
+- **可选**：`POST /internal/market-data/snapshot` 支持批量写入外部行情快照（Body: List&lt;MarketData&gt;），用于对接外部行情源或测试。
+- **相关类**：`MarketDataStore`（内存存储）、`MarketDataController`（REST）、`MarketPriceValidator`（下单前校验）、`OpenOrderStore.recalcTopOfBookFor`。
+
+---
+
+### 3.6 校验与风控组件说明
 
 #### OrderValidation（下单基本校验）
 
@@ -142,9 +156,15 @@
 - **作用**：撤单请求合法性（origClOrderId 非空与长度；可选：股东号与挂单一致）。
 - **逻辑**：若 OpenOrderStore 中存在该 origClOrderId 的挂单，且请求带了 shareholderId，则必须与挂单的 shareholderId 一致，否则返回撤单非法。
 
+#### MarketPriceValidator（行情价格校验）
+
+- **位置**：`com.trading.core.market.MarketPriceValidator`
+- **作用**：下单前校验订单价格是否在盘口范围内，避免明显偏离行情。
+- **模式**：EXACT（买价须=ask、卖价须=bid）/ INSIDE（买价≤ask、卖价≥bid；单边无挂单时可不校验）。配置 `trading.core.market-validation.mode`、`required`（无行情时是否拒单）。
+
 ---
 
-### 3.6 引擎与存储
+### 3.7 引擎与存储
 
 #### ExchangeEngineHolder
 
@@ -190,5 +210,6 @@ market 使用 XSHG/XSHE/BJSE，side 使用 B/S，与需求文档一致。
 | 撤单 | OrderController.cancelOrder | 可选撤单号生成、从 OpenOrderStore 补全请求 → CancelValidation → 引擎 → OpenOrderStore、TradeEventProcessor 取消注册、OrderEventSender |
 | 成交与挂单同步 | TradeEventProcessor 后台线程 | 消费 resultQueue → 解析 matcherEvent → 更新/移除 OpenOrderStore、发送 FILLED/PARTIALLY_FILLED |
 | 查挂单 | OrderController.getOpenOrders | OpenOrderStore.listByShareholder |
+| 行情查询 | MarketDataController.getLatest | MarketDataStore.get（盘口由 OpenOrderStore.recalcTopOfBookFor 写入） |
 
 Core 不直接面向最终用户，通常由 Gateway 或测试脚本调用其 REST 接口；所有交易校验与对敲风控均在本模块完成，再与 exchange-core 交互完成撮合与回报。
