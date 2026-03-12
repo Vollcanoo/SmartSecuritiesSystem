@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * CORS 配置：允许前端（http://localhost:8000）访问后端 API
+ * CORS 配置：允许前端访问后端 API
  */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
@@ -17,7 +17,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8000", "http://127.0.0.1:8000")
+                .allowedOrigins("http://localhost:8006", "http://127.0.0.1:8006", "http://129.211.187.179:8006")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -31,8 +31,9 @@ public class CorsConfig implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:8000");
-        config.addAllowedOrigin("http://127.0.0.1:8000");
+        config.addAllowedOrigin("http://localhost:8006");
+        config.addAllowedOrigin("http://127.0.0.1:8006");
+        config.addAllowedOrigin("http://129.211.187.179:8006");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
