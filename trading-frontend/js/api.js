@@ -101,6 +101,17 @@ const AdminAPI = {
         return await apiRequest(`${CONFIG.ADMIN_BASE_URL}/api/users/${uid}/balance`);
     },
 
+    // 用户交易分析
+    async getUserAnalysis(uid, start, end) {
+        const params = new URLSearchParams();
+        if (start) params.append('start', start);
+        if (end) params.append('end', end);
+
+        const query = params.toString();
+        const url = `${CONFIG.ADMIN_BASE_URL}/api/users/${uid}/analysis${query ? '?' + query : ''}`;
+        return await apiRequest(url);
+    },
+
     // 查询订单历史
     async getOrderHistory(params = {}) {
         const queryParams = new URLSearchParams();

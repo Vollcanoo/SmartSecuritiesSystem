@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 public interface OrderHistoryRepository extends JpaRepository<OrderHistory, Long> {
 
@@ -18,6 +19,12 @@ public interface OrderHistoryRepository extends JpaRepository<OrderHistory, Long
     List<OrderHistory> findByStatusOrderByCreatedAtDesc(String status, Pageable pageable);
 
     List<OrderHistory> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    List<OrderHistory> findByShareholderIdAndCreatedAtBetween(
+            String shareholderId,
+            LocalDateTime start,
+            LocalDateTime end
+    );
 
     Optional<OrderHistory> findByClOrderId(String clOrderId);
 

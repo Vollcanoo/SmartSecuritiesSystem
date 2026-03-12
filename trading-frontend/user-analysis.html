@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户交易分析 - 模拟股票交易对敲撮合系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 模拟股票交易对敲撮合系统</h1>
+            <nav>
+                <a href="index.html" class="nav-link">概览</a>
+                <a href="users.html" class="nav-link">用户管理</a>
+                <a href="trading.html" class="nav-link">交易下单</a>
+                <a href="orders.html" class="nav-link">订单历史</a>
+                <a href="open-orders.html" class="nav-link">当前挂单</a>
+                <a href="user-analysis.html" class="nav-link active">用户分析</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="user-analysis">
+                <h2>用户交易分析</h2>
+
+                <div class="card">
+                    <h3>查询条件</h3>
+                    <form id="analysis-form" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="analysis-uid">用户ID (uid)</label>
+                                <input type="number" id="analysis-uid" name="uid" required placeholder="请输入用户ID，例如 1">
+                            </div>
+                            <div class="form-group">
+                                <label for="analysis-range">时间范围</label>
+                                <select id="analysis-range" name="range" required>
+                                    <option value="">请选择时间范围</option>
+                                    <option value="7d">最近一周</option>
+                                    <option value="1m">最近一月</option>
+                                    <option value="3m">最近三月</option>
+                                    <option value="6m">最近半年</option>
+                                    <option value="1y">最近一年</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="analysis-start">开始时间</label>
+                                <input type="datetime-local" id="analysis-start" name="start">
+                            </div>
+                            <div class="form-group">
+                                <label for="analysis-end">结束时间</label>
+                                <input type="datetime-local" id="analysis-end" name="end">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">开始分析</button>
+                    </form>
+                    <div id="analysis-message" class="result-message info" style="display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>统计概览</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>订单总数</h3>
+                            <div id="stat-total-orders" class="stat-value">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>成交订单数</h3>
+                            <div id="stat-filled-orders" class="stat-value">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>撤单订单数</h3>
+                            <div id="stat-cancelled-orders" class="stat-value">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>成交总金额</h3>
+                            <div id="stat-total-turnover" class="stat-value">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>成交均价</h3>
+                            <div id="stat-avg-price" class="stat-value">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>可视化</h3>
+                    <div id="analysis-chart-container">
+                        <p id="analysis-chart-empty" class="info-text">请先输入条件并点击“开始分析”。</p>
+                        <div id="analysis-bars" style="display:none; margin-top:10px;">
+                            <div style="margin-bottom:8px; font-size: 14px; color:#4a5568;">
+                                成交 vs 撤单 占比
+                            </div>
+                            <div style="background:#edf2f7; border-radius:4px; overflow:hidden; height:26px; display:flex;">
+                                <div id="bar-filled" style="background:#48bb78; height:100%; width:0%; text-align:center; color:#fff; font-size:12px; line-height:26px;"></div>
+                                <div id="bar-cancelled" style="background:#f56565; height:100%; width:0%; text-align:center; color:#fff; font-size:12px; line-height:26px;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px;">
+                            <div style="margin-bottom:8px; font-size: 14px; color:#4a5568;">
+                                时间段内订单数量概览（总数 / 成交 / 撤单）
+                            </div>
+                            <div style="position: relative; width: 100%; max-width: 100%; height: 260px;">
+                                <canvas id="chart-orders-summary"></canvas>
+                            </div>
+                        </div>
+                        <div style="margin-top:24px;">
+                            <div style="margin-bottom:8px; font-size: 14px; color:#4a5568;">
+                                时间段内总支出 / 总收入走势
+                            </div>
+                            <div style="position: relative; width: 100%; max-width: 100%; height: 260px;">
+                                <canvas id="chart-income-expense"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>模拟股票交易对敲撮合系统 © 2026</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/user-analysis.js"></script>
+</body>
+</html>
+

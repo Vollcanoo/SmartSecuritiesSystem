@@ -2,6 +2,8 @@
 package com.trading.admin.controller;
 
 import com.trading.admin.entity.User;
+import com.trading.admin.dto.UserAnalysisDTO;
+import com.trading.admin.service.UserAnalysisService;
 import com.trading.admin.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserAnalysisService userAnalysisService;
 
     /**
      * 创建用户：系统自动生成 uid 和股东号，用户只需提供用户名。
@@ -118,6 +125,48 @@ public class UserController {
         balance.setBaseBalance(10000.0);    // 基础货币余额（持仓）
         balance.setNote("当前为简化实现，所有用户共享引擎余额");
         return ResponseEntity.ok(ApiResponse.success(balance));
+    }
+
+    /**
+     * 用户交易分析：在指定时间区间内统计单个用户的订单与成交情况。
+     *
+     * URL: GET /api/users/{uid}/analysis?start=2026-03-01T00:00:00&end=2026-03-07T23:59:59
+     */
+    @GetMapping("/{uid}/analysis")
+    public ResponseEntity<ApiResponse> analyzeUser(
+            @PathVariable Long uid,
+            @RequestParam("start") String start,
+            @RequestParam("end") String end
+    ) {
+        if (start == null || start.isEmpty() || end == null || end.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(400, "start 和 end 时间不能为空"));
+        }
+
+        try {
+            LocalDateTime startTime = LocalDateTime.parse(start);
+            LocalDateTime endTime = LocalDateTime.parse(end);
+
+            if (endTime.isBefore(startTime)) {
+                return ResponseEntity.badRequest()
+                        .body(ApiResponse.error(400, "end 时间不能早于 start 时间"));
+            }
+
+            UserAnalysisDTO analysis = userAnalysisService.analyze(uid, startTime, endTime);
+            return ResponseEntity.ok(ApiResponse.success(analysis));
+        } catch (DateTimeParseException e) {
+            log.warn("Invalid datetime format for user analysis, start={}, end={}", start, end);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(400, "时间格式不正确，期望 yyyy-MM-dd'T'HH:mm[:ss]"));
+        } catch (IllegalArgumentException e) {
+            log.warn("User analysis failed: {}", e.getMessage());
+            return ResponseEntity.status(404)
+                    .body(ApiResponse.error(404, e.getMessage()));
+        } catch (Exception e) {
+            log.error("User analysis error", e);
+            return ResponseEntity.status(500)
+                    .body(ApiResponse.error(500, "用户分析失败: " + e.getMessage()));
+        }
     }
 
     // DTO类
